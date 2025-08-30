@@ -40,7 +40,9 @@ import SignatureCanvas from "react-signature-canvas";
 import jsPDF from "jspdf";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "antd/dist/reset.css";
-import HaitianLogo from "./Images/TongdaLogo.png";
+import TongdaLogo from "./Images/TongdaLogo.png";
+import TongdaCenterLogo from "./Images/TongdaCenterLogo.png";
+
 import HaitianMachine from "./Images/HaitianMachine.png";
 import "./App.css";
 import TextArea from "antd/es/input/TextArea";
@@ -79,12 +81,13 @@ const reportOptions = [
 ];
 
 const technicianOptions = [
-  "Palani",
-  "Sampath",
-  "Karpagaraj",
-  "Balaji",
-  "Eswar",
-  "SivaSundar",
+  // "Palani",
+  // "Sampath",
+  // "Karpagaraj",
+  // "Balaji",
+  // "Eswar",
+  // "SivaSundar",
+  "Arumugasamy"
 ];
 
 const serviceOptions = [
@@ -165,7 +168,7 @@ export default function FormComponent() {
   const [selectedEditTechnicians, setSelectedEditTechnicians] = useState([]);
   const [isEditImageMarkedForDeletion, setIsEditImageMarkedForDeletion] =
     useState(false);
-    const GAS_URL="https://script.google.com/macros/s/AKfycbx4oajc9XDsC3FdBsst32JFNeiXajtfnFlEtqyFl6mecltYY6cH_eFJ8wn9zUsgiw-S/exec"
+    const GAS_URL="https://script.google.com/macros/s/AKfycbzY8Mh0Wz3lIRPk9W1Ol9JmKTD62yBHdFPDU2n9Yo38mHwTFv09vM7LsoBdXciGzooa/exec"
   const [data, setData] = useState([
     {
       key: Date.now(),
@@ -2231,7 +2234,7 @@ const clearEditCustomerSignature = () => {
     //   machineLogoHeight
     // );
     const centX = (pageWidth - haitianLogoWidth) / 2;
-    doc.addImage(HaitianLogo, "PNG", centX, 5, 50, 15);
+    doc.addImage(TongdaLogo, "PNG", centX, 5, 50, 15);
 
     doc.setFont("Emirates", "bold");
     doc.setFontSize(11);
@@ -2789,7 +2792,7 @@ const clearEditCustomerSignature = () => {
     //   machineLogoHeight
     // );
     const centX = (pageWidth - haitianLogoWidth) / 2;
-    doc.addImage(HaitianLogo, "PNG", centX, 5, 50, 15);
+    doc.addImage(TongdaLogo, "PNG", centX, 5, 50, 15);
 
     doc.setFont("Emirates", "bold");
     doc.setFontSize(11);
@@ -4181,10 +4184,10 @@ const fileName = `Tongda Service Report ${sanitizedEditCustomerName} ${editsrn |
         <div className="container-fluid border shadow rounded-5  mt-3 pt-3 mb-3 pb-3">
           <div className="container-fluid">
             <div className="row d-flex align-items-center justify-content-between">
-              <div className="col-7 col-md-6 col-lg-6 col-xl-6">
+              <div className="col-7 col-md-6 col-lg-6 col-xl-6 m-0 p-0">
                 <img
-                  src={HaitianLogo}
-                  alt="HaitianLogo"
+                  src={TongdaLogo}
+                  alt="TongdaLogo"
                   className="img-fluid haitianLogo"
                 />
               </div>
@@ -4840,8 +4843,8 @@ const fileName = `Tongda Service Report ${sanitizedEditCustomerName} ${editsrn |
             <div className="col-12 col-md-12 col-lg-12 col-xl-12  d-flex flex-column align-items-center justify-content-center p-2">
               <div className="fw-bold text-center">
                 <img
-                  src={HaitianLogo}
-                  alt="HaitianLogo"
+                  src={TongdaCenterLogo}
+                  alt="TongdaLogo"
                   className="img-fluid haitianTableLogo"
                 />
               </div>
@@ -4986,8 +4989,8 @@ const fileName = `Tongda Service Report ${sanitizedEditCustomerName} ${editsrn |
             >
               <div className="col-12 col-lg-8 text-center m-auto">
                 <img
-                  src={HaitianLogo}
-                  alt="HaitianLogo"
+                  src={TongdaCenterLogo}
+                  alt="TongdaLogo"
                   className="img-fluid haitianViewEditFormLogo"
                 />
               </div>
@@ -5173,8 +5176,8 @@ const fileName = `Tongda Service Report ${sanitizedEditCustomerName} ${editsrn |
               {/* <h3>Edit Service Form Record</h3> */}
               <div className="col-12 col-lg-8 text-center m-auto">
                 <img
-                  src={HaitianLogo}
-                  alt="HaitianLogo"
+                  src={TongdaCenterLogo}
+                  alt="TongdaLogo"
                   className="img-fluid haitianViewEditFormLogo"
                 />
               </div>
@@ -5347,23 +5350,27 @@ const fileName = `Tongda Service Report ${sanitizedEditCustomerName} ${editsrn |
                       rules={[
                         {
                           required: true,
-                          message: "Please select up to 3 service technicians",
+                          // message: "Please select up to 3 service technicians",
+                           message: "Please select the service technician",
                         },
                       ]}
                     >
                       <Select
                         mode="multiple"
-                        placeholder="Select up to 3 technicians"
+                        // placeholder="Select up to 3 technicians"
+                         placeholder="Select technician"
                         value={selectedEditTechnicians}
                         onChange={(value) => setSelectedEditTechnicians(value)}
                       >
                         {[
-                          "Palani",
-                          "Sampath",
-                          "Karpagaraj",
-                          "Balaji",
-                          "Eswar",
-                          "SivaSundar",
+                          // "Palani",
+                          // "Sampath",
+                          // "Karpagaraj",
+                          // "Balaji",
+                          // "Eswar",
+                          // "SivaSundar",
+                            "Arumugasamy"
+
                         ].map((tech) => (
                           <Select.Option
                             key={tech}

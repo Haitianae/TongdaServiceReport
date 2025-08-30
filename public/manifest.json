@@ -1,6 +1,6 @@
 {
-  "short_name": "Haitian Service Report",
-  "name": "Haitian Service Report",
+  "short_name": "Tongda Service Report",
+  "name": "Tongda Service Report",
   "icons": [
     {
       "src": "favicon.ico",
@@ -8,12 +8,12 @@
       "type": "image/x-icon"
     },
     {
-      "src": "HaitianApplogo192.png",
+      "src": "TongdaAppLogo192.png",
       "type": "image/png",
       "sizes": "192x192"
     },
     {
-      "src": "logo512.png",
+      "src": "TongdaAppLogo512.png",
       "type": "image/png",
       "sizes": "512x512"
     }
