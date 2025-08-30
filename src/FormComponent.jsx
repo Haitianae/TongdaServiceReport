@@ -40,7 +40,7 @@ import SignatureCanvas from "react-signature-canvas";
 import jsPDF from "jspdf";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "antd/dist/reset.css";
-import HaitianLogo from "./Images/HaitianLogo.png";
+import HaitianLogo from "./Images/TongdaLogo.png";
 import HaitianMachine from "./Images/HaitianMachine.png";
 import "./App.css";
 import TextArea from "antd/es/input/TextArea";
@@ -165,6 +165,7 @@ export default function FormComponent() {
   const [selectedEditTechnicians, setSelectedEditTechnicians] = useState([]);
   const [isEditImageMarkedForDeletion, setIsEditImageMarkedForDeletion] =
     useState(false);
+    const GAS_URL="https://script.google.com/macros/s/AKfycbx4oajc9XDsC3FdBsst32JFNeiXajtfnFlEtqyFl6mecltYY6cH_eFJ8wn9zUsgiw-S/exec"
   const [data, setData] = useState([
     {
       key: Date.now(),
@@ -227,7 +228,8 @@ export default function FormComponent() {
       payload.append("originalFilename", file.name);
 
       const res = await fetch(
-        "https://script.google.com/macros/s/AKfycbwYvP76g3eK_AdvEtm3Yn22EVyMfRggjESP7yQqMLrObh5cXcLLvoih8Q6rjVaGjhWdVA/exec",
+        // "https://script.google.com/macros/s/AKfycbx4oajc9XDsC3FdBsst32JFNeiXajtfnFlEtqyFl6mecltYY6cH_eFJ8wn9zUsgiw-S/exec",
+        GAS_URL,
         {
           method: "POST",
           headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -501,7 +503,8 @@ const clearEditCustomerSignature = () => {
     formData.append("causeImage", causeOfFailureImage);
 
     const res = await fetch(
-      "https://script.google.com/macros/s/AKfycbwYvP76g3eK_AdvEtm3Yn22EVyMfRggjESP7yQqMLrObh5cXcLLvoih8Q6rjVaGjhWdVA/exec",
+      // "https://script.google.com/macros/s/AKfycbx4oajc9XDsC3FdBsst32JFNeiXajtfnFlEtqyFl6mecltYY6cH_eFJ8wn9zUsgiw-S/exec",
+      GAS_URL,
       {
         method: "POST",
         body: formData,
@@ -835,9 +838,12 @@ const clearEditCustomerSignature = () => {
   }, []);
 
   const loadAllCustomerData = async () => {
-    const res = await fetch(
-      "https://script.google.com/macros/s/AKfycbwYvP76g3eK_AdvEtm3Yn22EVyMfRggjESP7yQqMLrObh5cXcLLvoih8Q6rjVaGjhWdVA/exec?action=getAllCustomerData"
-    );
+    // const res = await fetch(
+    //   "https://script.google.com/macros/s/AKfycbx4oajc9XDsC3FdBsst32JFNeiXajtfnFlEtqyFl6mecltYY6cH_eFJ8wn9zUsgiw-S/exec?action=getAllCustomerData"
+    // );
+
+    const res = await fetch(`${GAS_URL}?action=getAllCustomerData`);
+
     const result = await res.json();
 
     if (result.success && Array.isArray(result.customers)) {
@@ -935,9 +941,11 @@ const clearEditCustomerSignature = () => {
 
   const fetchCustomerNames = async () => {
     try {
-      const res = await fetch(
-        `https://script.google.com/macros/s/AKfycbwYvP76g3eK_AdvEtm3Yn22EVyMfRggjESP7yQqMLrObh5cXcLLvoih8Q6rjVaGjhWdVA/exec?action=getAllCustomerData`
-      );
+      // const res = await fetch(
+      //   `https://script.google.com/macros/s/AKfycbx4oajc9XDsC3FdBsst32JFNeiXajtfnFlEtqyFl6mecltYY6cH_eFJ8wn9zUsgiw-S/exec?action=getAllCustomerData`
+      // );
+          const res = await fetch(`${GAS_URL}?action=getAllCustomerData`);
+
       const result = await res.json();
 
       if (result.success) {
@@ -965,11 +973,14 @@ const clearEditCustomerSignature = () => {
 
   const handleCustomerSelect = async (selectedName) => {
     try {
-      const res = await fetch(
-        `https://script.google.com/macros/s/AKfycbwYvP76g3eK_AdvEtm3Yn22EVyMfRggjESP7yQqMLrObh5cXcLLvoih8Q6rjVaGjhWdVA/exec?action=getCustomerData&name=${encodeURIComponent(
-          selectedName
-        )}`
-      );
+      // const res = await fetch(
+      //   `https://script.google.com/macros/s/AKfycbx4oajc9XDsC3FdBsst32JFNeiXajtfnFlEtqyFl6mecltYY6cH_eFJ8wn9zUsgiw-S/exec?action=getCustomerData&name=${encodeURIComponent(
+      //     selectedName
+      //   )}`
+      // );
+        const res = await fetch(
+      `${GAS_URL}?action=getCustomerData&name=${encodeURIComponent(selectedName)}`
+    );
       const result = await res.json();
       if (result.success) {
         const data = result.customerData;
@@ -994,9 +1005,10 @@ const clearEditCustomerSignature = () => {
 
   const fetchSRN = async () => {
     try {
-      const response = await fetch(
-        "https://script.google.com/macros/s/AKfycbwYvP76g3eK_AdvEtm3Yn22EVyMfRggjESP7yQqMLrObh5cXcLLvoih8Q6rjVaGjhWdVA/exec"
-      );
+      // const response = await fetch(
+      //   "https://script.google.com/macros/s/AKfycbx4oajc9XDsC3FdBsst32JFNeiXajtfnFlEtqyFl6mecltYY6cH_eFJ8wn9zUsgiw-S/exec"
+      // );
+      const response = await fetch(GAS_URL)
       const data = await response.json(); // ✅ Parse JSON directly
 
       // console.log("Fetched SRN:", data.srn); // ✅ Log SRN in console
@@ -2097,7 +2109,8 @@ const clearEditCustomerSignature = () => {
       payload.append("customerName", customerName);
 
       const response = await fetch(
-        "https://script.google.com/macros/s/AKfycbwYvP76g3eK_AdvEtm3Yn22EVyMfRggjESP7yQqMLrObh5cXcLLvoih8Q6rjVaGjhWdVA/exec",
+        // "https://script.google.com/macros/s/AKfycbx4oajc9XDsC3FdBsst32JFNeiXajtfnFlEtqyFl6mecltYY6cH_eFJ8wn9zUsgiw-S/exec",
+        GAS_URL,
         {
           method: "POST",
           headers: {
@@ -2209,14 +2222,14 @@ const clearEditCustomerSignature = () => {
     const machineLogoHeight = 40;
     const haitianLogoWidth = 50;
     const haitianLogoHeight = 15;
-    doc.addImage(
-      HaitianMachine,
-      "PNG",
-      0,
-      -9,
-      machineLogoWidth,
-      machineLogoHeight
-    );
+    // doc.addImage(
+    //   HaitianMachine,
+    //   "PNG",
+    //   0,
+    //   -9,
+    //   machineLogoWidth,
+    //   machineLogoHeight
+    // );
     const centX = (pageWidth - haitianLogoWidth) / 2;
     doc.addImage(HaitianLogo, "PNG", centX, 5, 50, 15);
 
@@ -2657,30 +2670,30 @@ const clearEditCustomerSignature = () => {
     doc.line(10, lineY, doc.internal.pageSize.width - 10, lineY);
     doc.setFont("Emirates", "bold");
     doc.setFontSize(13);
-    doc.text("Haitian Middle East", centerX, footerY + 1, { align: "center" });
+    doc.text("Tongda Middle East", centerX, footerY + 1, { align: "center" });
 
     doc.setFontSize(9);
     doc.text(
       // "PO BOX: 49648, Phase 1, Hamriya Free Zone Sharjah, United Arab Emirates",
-      "Umm El Thoub, Umm Al Quwain, United Arab Emirates",
+      "United Arab Emirates",
       centerX, // Proper centering
       footerY + 6,
       { align: "center" }
     );
 
     // **Third Row: Contact Information - Centered**
-    doc.text(
-      "Phone: +971 656 222 38  Email: ask@haitianme.com  Web: www.haitianme.com",
-      centerX, // Proper centering
-      footerY + 11,
-      { align: "center" }
-    );
+    // doc.text(
+    //   "Phone: +971 656 222 38  Email: ask@haitianme.com  Web: www.haitianme.com",
+    //   centerX, // Proper centering
+    //   footerY + 11,
+    //   { align: "center" }
+    // );
 
     // const fileName = `HT_Service_Report_${srn || "N/A"}.pdf`;
 
        const sanitizedCustomerName = formData.customerName.replace(/[^a-zA-Z0-9- ]/g, "").trim();
 
-    const fileName = `HT Service Report ${sanitizedCustomerName} ${srn|| "N/A"}.pdf`;
+    const fileName = `Tongda Service Report ${sanitizedCustomerName} ${srn|| "N/A"}.pdf`;
 
 
     // doc.save("Service_Report.pdf");
@@ -2767,14 +2780,14 @@ const clearEditCustomerSignature = () => {
     const machineLogoHeight = 40;
     const haitianLogoWidth = 50;
     const haitianLogoHeight = 15;
-    doc.addImage(
-      HaitianMachine,
-      "PNG",
-      0,
-      -9,
-      machineLogoWidth,
-      machineLogoHeight
-    );
+    // doc.addImage(
+    //   HaitianMachine,
+    //   "PNG",
+    //   0,
+    //   -9,
+    //   machineLogoWidth,
+    //   machineLogoHeight
+    // );
     const centX = (pageWidth - haitianLogoWidth) / 2;
     doc.addImage(HaitianLogo, "PNG", centX, 5, 50, 15);
 
@@ -3214,31 +3227,31 @@ const clearEditCustomerSignature = () => {
     doc.line(10, lineY, doc.internal.pageSize.width - 10, lineY);
     doc.setFont("Emirates", "bold");
     doc.setFontSize(13);
-    doc.text("Haitian Middle East", centerX, footerY + 1, { align: "center" });
+    doc.text("Tongda Middle East", centerX, footerY + 1, { align: "center" });
 
     doc.setFontSize(9);
     doc.text(
       // "PO BOX: 49648, Phase 1, Hamriya Free Zone Sharjah, United Arab Emirates",
-      "Umm El Thoub, Umm Al Quwain, United Arab Emirates",
+      "United Arab Emirates",
       centerX, // Proper centering
       footerY + 6,
       { align: "center" }
     );
 
     // **Third Row: Contact Information - Centered**
-    doc.text(
-      "Phone: +971 656 222 38  Email: ask@haitianme.com  Web: www.haitianme.com",
-      centerX, // Proper centering
-      footerY + 11,
-      { align: "center" }
-    );
+    // doc.text(
+    //   "Phone: +971 656 222 38  Email: ask@haitianme.com  Web: www.haitianme.com",
+    //   centerX, // Proper centering
+    //   footerY + 11,
+    //   { align: "center" }
+    // );
 
     // const fileName = `HT_Service_Report_${editsrn || "N/A"}.pdf`;
 
     // const sanitizedCustomerName = formData.customerName.replace(/[^a-zA-Z0-9-_ ]/g, "").replace(/\s+/g, "_");
     const sanitizedEditCustomerName = formData.customerName.replace(/[^a-zA-Z0-9- ]/g, "").trim();
 
-const fileName = `HT Service Report ${sanitizedEditCustomerName} ${editsrn || "N/A"}.pdf`;
+const fileName = `Tongda Service Report ${sanitizedEditCustomerName} ${editsrn || "N/A"}.pdf`;
 
     // doc.save("Service_Report.pdf");
     doc.save(fileName);
@@ -3263,7 +3276,8 @@ const fileName = `HT Service Report ${sanitizedEditCustomerName} ${editsrn || "N
 
     // Sending the file to the Google Apps Script for uploading to Drive
     const res = await fetch(
-      "https://script.google.com/macros/s/AKfycbwYvP76g3eK_AdvEtm3Yn22EVyMfRggjESP7yQqMLrObh5cXcLLvoih8Q6rjVaGjhWdVA/exec",
+      // "https://script.google.com/macros/s/AKfycbx4oajc9XDsC3FdBsst32JFNeiXajtfnFlEtqyFl6mecltYY6cH_eFJ8wn9zUsgiw-S/exec",
+      GAS_URL,
       {
         method: "POST",
         headers: {
@@ -3460,7 +3474,7 @@ const fileName = `HT Service Report ${sanitizedEditCustomerName} ${editsrn || "N
 
     saveAs(
       blob,
-      `Haitian_Service_Report_Excel_Exported_On_${dayjs().format(
+      `Tongda_Service_Report_Excel_Exported_On_${dayjs().format(
         "DD-MM-YY_HH-mm-ss"
       )}.xlsx`
     );
@@ -3628,7 +3642,8 @@ const fileName = `HT Service Report ${sanitizedEditCustomerName} ${editsrn || "N
       // setLoading(true);
 
       const res = await fetch(
-        "https://script.google.com/macros/s/AKfycbwYvP76g3eK_AdvEtm3Yn22EVyMfRggjESP7yQqMLrObh5cXcLLvoih8Q6rjVaGjhWdVA/exec",
+        // "https://script.google.com/macros/s/AKfycbx4oajc9XDsC3FdBsst32JFNeiXajtfnFlEtqyFl6mecltYY6cH_eFJ8wn9zUsgiw-S/exec",
+        GAS_URL,
         {
           method: "POST",
           body: formData,
@@ -3835,7 +3850,8 @@ const fileName = `HT Service Report ${sanitizedEditCustomerName} ${editsrn || "N
       if (isEditImageMarkedForDeletion && editViewUrl) {
         try {
           const deleteRes = await fetch(
-            "https://script.google.com/macros/s/AKfycbwYvP76g3eK_AdvEtm3Yn22EVyMfRggjESP7yQqMLrObh5cXcLLvoih8Q6rjVaGjhWdVA/exec",
+            // "https://script.google.com/macros/s/AKfycbx4oajc9XDsC3FdBsst32JFNeiXajtfnFlEtqyFl6mecltYY6cH_eFJ8wn9zUsgiw-S/exec",
+            GAS_URL,
             {
               method: "POST",
               headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -4017,7 +4033,8 @@ const fileName = `HT Service Report ${sanitizedEditCustomerName} ${editsrn || "N
 
   const postUpdate = async (formData) => {
     const res = await fetch(
-      "https://script.google.com/macros/s/AKfycbwYvP76g3eK_AdvEtm3Yn22EVyMfRggjESP7yQqMLrObh5cXcLLvoih8Q6rjVaGjhWdVA/exec",
+      // "https://script.google.com/macros/s/AKfycbx4oajc9XDsC3FdBsst32JFNeiXajtfnFlEtqyFl6mecltYY6cH_eFJ8wn9zUsgiw-S/exec",
+      GAS_URL,
       {
         method: "POST",
         body: formData,
@@ -4047,7 +4064,8 @@ const fileName = `HT Service Report ${sanitizedEditCustomerName} ${editsrn || "N
 
   const submitUpdate = async (payload) => {
     const res = await fetch(
-      "https://script.google.com/macros/s/AKfycbwYvP76g3eK_AdvEtm3Yn22EVyMfRggjESP7yQqMLrObh5cXcLLvoih8Q6rjVaGjhWdVA/exec",
+      // "https://script.google.com/macros/s/AKfycbx4oajc9XDsC3FdBsst32JFNeiXajtfnFlEtqyFl6mecltYY6cH_eFJ8wn9zUsgiw-S/exec",
+      GAS_URL,
       {
         method: "POST",
         body: new URLSearchParams(payload),
@@ -4077,7 +4095,8 @@ const fileName = `HT Service Report ${sanitizedEditCustomerName} ${editsrn || "N
     payload.append("imageUrl", url);
 
     const res = await fetch(
-      "https://script.google.com/macros/s/AKfycbwYvP76g3eK_AdvEtm3Yn22EVyMfRggjESP7yQqMLrObh5cXcLLvoih8Q6rjVaGjhWdVA/exec",
+      // "https://script.google.com/macros/s/AKfycbx4oajc9XDsC3FdBsst32JFNeiXajtfnFlEtqyFl6mecltYY6cH_eFJ8wn9zUsgiw-S/exec",
+      GAS_URL,
       {
         method: "POST",
         headers: { "Content-Type": "application/x-www-form-urlencoded" },
@@ -4106,7 +4125,8 @@ const fileName = `HT Service Report ${sanitizedEditCustomerName} ${editsrn || "N
 
     try {
       const res = await fetch(
-        "https://script.google.com/macros/s/AKfycbwYvP76g3eK_AdvEtm3Yn22EVyMfRggjESP7yQqMLrObh5cXcLLvoih8Q6rjVaGjhWdVA/exec",
+        // "https://script.google.com/macros/s/AKfycbx4oajc9XDsC3FdBsst32JFNeiXajtfnFlEtqyFl6mecltYY6cH_eFJ8wn9zUsgiw-S/exec",
+        GAS_URL,
         {
           method: "POST",
           headers: {
@@ -5764,10 +5784,10 @@ const fileName = `HT Service Report ${sanitizedEditCustomerName} ${editsrn || "N
         </div>
         <div className="text-center mt-2">
             <p className="text-center m-0 p-0" style={{ fontSize: "14px", color:"#0D3884" }}>
-            Haitian Service Report Form Version: 2.00
+            Tongda Service Report Form Version: 1.00
             
           </p>
-          <p className="text-center m-0 p-0 mt-1" style={{ fontSize: "14px", color:"#0D3884"  }}>
+          {/* <p className="text-center m-0 p-0 mt-1" style={{ fontSize: "14px", color:"#0D3884"  }}>
             Crafted and Maintained by{" "}
             <a
               href="https://www.stratifytechno.com/"
@@ -5777,7 +5797,8 @@ const fileName = `HT Service Report ${sanitizedEditCustomerName} ${editsrn || "N
             >
               Stratify Techologies
             </a>
-          </p>
+          </p> */}
+          <p className="text-center m-0 p-0" style={{ fontSize: "14px", color:"#0D3884" }}>© 2025 Tongda Middle East. All rights reserved.</p>
         </div>
       </div>
     </>
