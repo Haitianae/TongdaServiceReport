@@ -1,24 +1,24 @@
 {
   "files": {
-    "main.css": "/TongdaServiceReport/static/css/main.da12db77.css",
-    "main.js": "/TongdaServiceReport/static/js/main.824aca9e.js",
-    "static/js/239.81f2280a.chunk.js": "/TongdaServiceReport/static/js/239.81f2280a.chunk.js",
-    "static/js/977.2c90715d.chunk.js": "/TongdaServiceReport/static/js/977.2c90715d.chunk.js",
-    "static/js/667.de57f5ca.chunk.js": "/TongdaServiceReport/static/js/667.de57f5ca.chunk.js",
-    "static/js/453.49b82efc.chunk.js": "/TongdaServiceReport/static/js/453.49b82efc.chunk.js",
+    "main.css": "/TongdaServiceReport/static/css/main.4488ed46.css",
+    "main.js": "/TongdaServiceReport/static/js/main.bcc6bcf2.js",
+    "static/js/239.00603e74.chunk.js": "/TongdaServiceReport/static/js/239.00603e74.chunk.js",
+    "static/js/977.c56ba363.chunk.js": "/TongdaServiceReport/static/js/977.c56ba363.chunk.js",
+    "static/js/667.1da51aaf.chunk.js": "/TongdaServiceReport/static/js/667.1da51aaf.chunk.js",
+    "static/js/453.225d8625.chunk.js": "/TongdaServiceReport/static/js/453.225d8625.chunk.js",
     "static/media/HaitianMachine.png": "/TongdaServiceReport/static/media/HaitianMachine.d05e15d4114893f407f5.png",
+    "static/media/TongdaBanner.jpg": "/TongdaServiceReport/static/media/TongdaBanner.a1d0f64701af6df5b48e.jpg",
     "static/media/TongdaLogo.png": "/TongdaServiceReport/static/media/TongdaLogo.445bb9e4621647aaab96.png",
     "static/media/TongdaCenterLogo.png": "/TongdaServiceReport/static/media/TongdaCenterLogo.343d0a6682665da616c0.png",
-    "static/media/logo.svg": "/TongdaServiceReport/static/media/logo.6ce24c58023cc2f8fd88fe9d219db6c6.svg",
     "index.html": "/TongdaServiceReport/index.html",
-    "main.da12db77.css.map": "/TongdaServiceReport/static/css/main.da12db77.css.map",
-    "main.824aca9e.js.map": "/TongdaServiceReport/static/js/main.824aca9e.js.map",
-    "239.81f2280a.chunk.js.map": "/TongdaServiceReport/static/js/239.81f2280a.chunk.js.map",
-    "667.de57f5ca.chunk.js.map": "/TongdaServiceReport/static/js/667.de57f5ca.chunk.js.map",
-    "453.49b82efc.chunk.js.map": "/TongdaServiceReport/static/js/453.49b82efc.chunk.js.map"
+    "main.4488ed46.css.map": "/TongdaServiceReport/static/css/main.4488ed46.css.map",
+    "main.bcc6bcf2.js.map": "/TongdaServiceReport/static/js/main.bcc6bcf2.js.map",
+    "239.00603e74.chunk.js.map": "/TongdaServiceReport/static/js/239.00603e74.chunk.js.map",
+    "667.1da51aaf.chunk.js.map": "/TongdaServiceReport/static/js/667.1da51aaf.chunk.js.map",
+    "453.225d8625.chunk.js.map": "/TongdaServiceReport/static/js/453.225d8625.chunk.js.map"
   },
   "entrypoints": [
-    "static/css/main.da12db77.css",
-    "static/js/main.824aca9e.js"
+    "static/css/main.4488ed46.css",
+    "static/js/main.bcc6bcf2.js"
   ]
 }
