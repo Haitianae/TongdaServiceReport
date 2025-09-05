@@ -19,9 +19,11 @@ import {
   Modal,
   Descriptions,
   Popconfirm,
-  Searc,
   notification,
+  Dropdown,
+  Avatar
 } from "antd";
+
 import {
   UploadOutlined,
   DeleteOutlined,
@@ -35,6 +37,7 @@ import {
   ExportOutlined,
   FilterOutlined,
   DownloadOutlined,
+  MailOutlined, LogoutOutlined
 } from "@ant-design/icons";
 import SignatureCanvas from "react-signature-canvas";
 import jsPDF from "jspdf";
@@ -101,7 +104,7 @@ const serviceOptions = [
   "Goodwill",
 ];
 
-export default function FormComponent() {
+export default function FormComponent({onLogout, user}) {
   const [form] = Form.useForm();
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(false);
@@ -166,9 +169,10 @@ export default function FormComponent() {
   const [isCustomerSignSaved, setIsCustomerSignSaved] = useState(false);
   const [isManagerSignUploaded, setIsManagerSignUploaded] = useState(false);
   const [selectedEditTechnicians, setSelectedEditTechnicians] = useState([]);
-  const [isEditImageMarkedForDeletion, setIsEditImageMarkedForDeletion] =
+  const [open, setOpen] = useState(false);
+  const GAS_URL="https://script.google.com/macros/s/AKfycbwoOO1birw7eYNLvgNk6o3UjrG-0ZvX4jqgmrVaWRfCW-5QESrz9IJWvvX5doZqWV-T/exec";
+    const [isEditImageMarkedForDeletion, setIsEditImageMarkedForDeletion] =
     useState(false);
-    const GAS_URL="https://script.google.com/macros/s/AKfycbzY8Mh0Wz3lIRPk9W1Ol9JmKTD62yBHdFPDU2n9Yo38mHwTFv09vM7LsoBdXciGzooa/exec"
   const [data, setData] = useState([
     {
       key: Date.now(),
@@ -2099,51 +2103,104 @@ const clearEditCustomerSignature = () => {
     };
   };
 
+  // const uploadPdfToDrive = async (pdfBlob, filename) => {
+  //     const customerName = formData.customerName || "";
+  //   const reader = new FileReader();
+  //   reader.onloadend = async () => {
+  //     const base64 = reader.result.split(",")[1];
+
+  //     const payload = new URLSearchParams();
+  //     payload.append("action", "uploadPdf");
+  //     payload.append("pdfBase64", base64);
+  //     payload.append("filename", filename);
+  //     payload.append("customerName", customerName);
+
+  //     const response = await fetch(
+  //       // "https://script.google.com/macros/s/AKfycbx4oajc9XDsC3FdBsst32JFNeiXajtfnFlEtqyFl6mecltYY6cH_eFJ8wn9zUsgiw-S/exec",
+  //       GAS_URL,
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           "Content-Type": "application/x-www-form-urlencoded",
+  //         },
+  //         body: payload.toString(),
+  //       }
+  //     );
+
+  //     const result = await response.json();
+  //     if (result.success) {
+  //       // message.success("PDF uploaded to Drive");
+  //       notification.success({
+  //         message: "Success",
+  //         description: "PDF uploaded to Drive successfully!",
+  //         placement: "bottomRight",
+  //       });
+  //       // console.log("Drive Link:", result.url);
+  //     } else {
+  //       // message.error("Failed to upload PDF: " + result.message);
+  //       notification.error({
+  //         message: "Error",
+  //         description: "Failed to upload PDF in Drive: " + result.message,
+  //         placement: "bottomRight",
+  //       });
+  //     }
+  //   };
+
+  //   reader.readAsDataURL(pdfBlob);
+  // };
+
   const uploadPdfToDrive = async (pdfBlob, filename) => {
-      const customerName = formData.customerName || "";
-    const reader = new FileReader();
-    reader.onloadend = async () => {
-      const base64 = reader.result.split(",")[1];
+  const customerName = formData.customerName || "";
+  const reader = new FileReader();
 
-      const payload = new URLSearchParams();
-      payload.append("action", "uploadPdf");
-      payload.append("pdfBase64", base64);
-      payload.append("filename", filename);
-      payload.append("customerName", customerName);
+  reader.onloadend = async () => {
+    let base64 = reader.result.split(",")[1];
+    base64 = base64.replace(/\s/g, ""); // remove whitespace/newlines
 
-      const response = await fetch(
-        // "https://script.google.com/macros/s/AKfycbx4oajc9XDsC3FdBsst32JFNeiXajtfnFlEtqyFl6mecltYY6cH_eFJ8wn9zUsgiw-S/exec",
-        GAS_URL,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
-          body: payload.toString(),
-        }
-      );
+    const payload = new URLSearchParams();
+    payload.append("action", "uploadPdf");
+    payload.append("pdfBase64", base64);
+    payload.append("filename", filename);
+    payload.append("customerName", customerName);
+
+    try {
+      const response = await fetch(GAS_URL, {
+        method: "POST",
+        headers: { "Content-Type": "application/x-www-form-urlencoded" },
+        body: payload.toString(),
+      });
 
       const result = await response.json();
+
       if (result.success) {
-        // message.success("PDF uploaded to Drive");
         notification.success({
           message: "Success",
           description: "PDF uploaded to Drive successfully!",
           placement: "bottomRight",
+           duration: 0,
         });
-        // console.log("Drive Link:", result.url);
+        console.log("Drive Link:", result.url);
       } else {
-        // message.error("Failed to upload PDF: " + result.message);
         notification.error({
           message: "Error",
           description: "Failed to upload PDF in Drive: " + result.message,
           placement: "bottomRight",
+           duration: 0,
         });
       }
-    };
-
-    reader.readAsDataURL(pdfBlob);
+    } catch (error) {
+      notification.error({
+        message: "Error",
+        description: "Network or server error during PDF upload",
+        placement: "bottomRight",
+         duration: 0,
+      });
+      console.error("Upload error:", error);
+    }
   };
+
+  reader.readAsDataURL(pdfBlob);
+};
 
   const generatePDF = async (formData, checkboxValues, partsUsed) => {
     const doc = new jsPDF();
@@ -4182,31 +4239,156 @@ const fileName = `Tongda Service Report ${sanitizedEditCustomerName} ${editsrn |
       <style>{styl}</style>
       <div className="container-fluid pb-1">
         <div className="container-fluid border shadow rounded-5  mt-3 pt-3 mb-3 pb-3">
-          <div className="container-fluid">
-            <div className="row d-flex align-items-center justify-content-between">
-              <div className="col-7 col-md-6 col-lg-6 col-xl-6 m-0 p-0">
+             <div className="row d-flex align-items-center justify-content-center">
+              {/* Logo */}
+              <div className="col-5 col-md-5 col-lg-5 col-xl-5">
                 <img
                   src={TongdaLogo}
                   alt="TongdaLogo"
                   className="img-fluid haitianLogo"
                 />
               </div>
-              {/* <div className="col-12 col-lg-3"></div> */}
-              <div className="col-4 col-md-3 col-lg-3 col-xl-2 d-flex flex-column align-items-lg-start ">
+
+              {/* Title */}
+              <div className="col-5 col-md-5 col-lg-5 col-xl-5 ">
                 <p
-                  className="header_Service_Text m-0 p-0 ms-xl-4"
-                  style={{ color: "#0D3884" }}
+                  className="header_Service_Text m-0 p-0"
+                  style={{ color: "#0D3884", fontWeight: "bold" }}
                 >
-                  Service Report
+                  Service Report No: {srn || "Loading..."}
                 </p>
-                <span className="ms-xl-4">
-                  <strong style={{ color: "#0D3884" }}>
-                    No: {srn || "Loading..."}
-                  </strong>
-                </span>
+              </div>
+
+              {/* Avatar with Dropdown */}
+              <div className="col-2 col-md-2 col-lg-2 col-xl-2 text-end">
+                <Dropdown
+                  placement="bottomRight"
+                  open={open}
+                  onOpenChange={(flag) => setOpen(flag)}
+                  trigger={["click"]}
+                  dropdownRender={() => {
+                    const email = user?.email || "";
+                    const initials = email.substring(0, 2).toUpperCase();
+                    const username = email.split("@")[0];
+
+                    return (
+                      <div
+                        style={{
+                          minWidth: 250,
+                          borderRadius: 12,
+                          overflow: "hidden",
+                          boxShadow: "0 6px 18px rgba(0,0,0,0.15)",
+                        }}
+                      >
+                        {/* Gradient Header */}
+                        <div
+                          style={{
+                            background: "#0d3884",
+                            color: "#fff",
+                            display: "flex",
+                            alignItems: "center",
+                            padding: "16px",
+                          }}
+                        >
+                          <Avatar
+                            size={48}
+                            style={{
+                              backgroundColor: "transparent",
+                              border: "2px solid #fff",
+                              color: "#fff",
+                              fontWeight: "bold",
+                              marginRight: 12,
+                            }}
+                          >
+                            {initials}
+                          </Avatar>
+                          <div>
+                            <div style={{ fontSize: 12, opacity: 0.9 }}>
+                              Welcome back
+                            </div>
+                            <Tooltip title={username}>
+                              <div
+                                style={{
+                                  fontWeight: 600,
+                                  fontSize: 16,
+                                  whiteSpace: "nowrap",
+                                  overflow: "hidden",
+                                  textOverflow: "ellipsis",
+                                  maxWidth: 150, // <-- limit width
+                                }}
+                              >
+                                {username}
+                              </div>
+                            </Tooltip>
+                          </div>
+                        </div>
+
+                        {/* Body */}
+                        <div style={{ background: "#fff", padding: "16px" }}>
+                          {/* Email */}
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              marginBottom: 16,
+                              maxWidth: 200, // control width
+                            }}
+                          >
+                            <MailOutlined
+                              style={{ marginRight: 8, color: "#444" }}
+                            />
+                            <Tooltip title={email}>
+                              <span
+                                style={{
+                                  fontSize: 14,
+                                  whiteSpace: "nowrap",
+                                  overflow: "hidden",
+                                  textOverflow: "ellipsis",
+                                  display: "inline-block",
+                                  maxWidth: "160px", // adjust to fit design
+                                  verticalAlign: "bottom",
+                                }}
+                              >
+                                {email}
+                              </span>
+                            </Tooltip>
+                          </div>
+
+                          {/* Logout Button */}
+                          <Button
+                            type="primary"
+                            danger
+                            block
+                            icon={<LogoutOutlined />}
+                            onClick={() => {
+                              setOpen(false);
+                              onLogout();
+                            }}
+                            style={{
+                              borderRadius: 8,
+                              fontWeight: 500,
+                            }}
+                          >
+                            Logout
+                          </Button>
+                        </div>
+                      </div>
+                    );
+                  }}
+                >
+                  <Avatar
+                    size="large"
+                    style={{
+                      backgroundColor: "#0D3884",
+                      cursor: "pointer",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {user.email?.substring(0, 2).toUpperCase()}
+                  </Avatar>
+                </Dropdown>
               </div>
             </div>
-          </div>
           <div className="container-fluid  mt-3">
             <div className="row">
               <div className="col-12">
@@ -5789,24 +5971,7 @@ const fileName = `Tongda Service Report ${sanitizedEditCustomerName} ${editsrn |
             </Modal>
           </div>
         </div>
-        <div className="text-center mt-2">
-            <p className="text-center m-0 p-0" style={{ fontSize: "14px", color:"#0D3884" }}>
-            Tongda Service Report Form Version: 1.00
-            
-          </p>
-          {/* <p className="text-center m-0 p-0 mt-1" style={{ fontSize: "14px", color:"#0D3884"  }}>
-            Crafted and Maintained by{" "}
-            <a
-              href="https://www.stratifytechno.com/"
-              target="_blank"
-              className="text-primary"
-              style={{ textDecoration: "none" }}
-            >
-              Stratify Techologies
-            </a>
-          </p> */}
-          <p className="text-center m-0 p-0" style={{ fontSize: "14px", color:"#0D3884" }}>© 2025 Tongda Middle East. All rights reserved.</p>
-        </div>
+   
       </div>
     </>
   );

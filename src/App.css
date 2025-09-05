@@ -143,6 +143,9 @@ font-weight: bolder;
   border-radius: 10px;
 }
 
+.loginContainer {
+  width: 70% !important;       /* take full col width */
+}
 
 
 /* Media Queries  Style */
@@ -157,6 +160,10 @@ width:30% !important;
 .haitianViewEditFormLogo{
 width:30% !important;
 }
+      /* .loginContainer{
+        width: 100% !important;
+
+  } */
 }
 
 @media only screen and (max-width: 1444px) {
@@ -169,6 +176,10 @@ width:30% !important;
 .haitianViewEditFormLogo{
 width:30% !important;
 }
+      /* .loginContainer{
+        width: 90% !important;
+
+  } */
 }
 
 @media only screen and (max-width: 1026px) {
@@ -181,6 +192,11 @@ width:30% !important;
 .haitianViewEditFormLogo{
 width:30% !important;
 }
+       /* .loginContainer{
+        width: 70% !important;
+
+  } */
+
 }
 
 @media only screen and (max-width: 768px) {
@@ -199,28 +215,107 @@ width:30% !important;
      .editsubmitbutton {
       width: 30%;
     }
+      .loginContainer{
+        width: 80% !important;
+
+  }
 }
 
 @media only screen and (max-width: 427px) {
   .haitianLogo{
     width:70% !important;
     }
+      .loginContainer{
+        width: 100% !important;
+
+  }
 }
 
 @media only screen and (max-width: 377px) {
   .haitianLogo{
     width:70% !important;
     }
+      .loginContainer{
+        width: 100% !important;
+
+  }
 }
 
 @media only screen and (max-width: 326px) {
   .haitianLogo{
     width:70% !important;
     }
+      .loginContainer{
+        width: 100% !important;
+
+  }
 }
 
 @media only screen and (max-width: 768px) and (orientation: landscape) {
   .haitianLogo {
     width: 60% !important;
   }
+  .loginContainer{
+        width: 60% !important;
+
+  }
+}
+
+.login-animation.page-enter {
+  animation-name: fadeInDiagonal;
+}
+
+@keyframes fadeInDiagonal {
+  0% {
+    opacity: 0;
+    transform: translateY(-300px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInSlideUp {
+0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  60% {
+    opacity: 1;
+    transform: translateY(-10px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.fade-in {
+ animation: fadeInSlideUp 0.6s ease-out forwards;
+  will-change: opacity, transform;
+}
+
+.haitianColor {
+  color: #0d3884 !important;
+}
+
+
+.loginButton {
+  width: 100% !important;
+  background-color: #0d3884 !important;
+  font-family: "Poppins", sans-serif !important;
+  color: white !important;
+  font-size: 20px !important;
+  border: none !important;
+  border-radius: 6px;
+  padding: 12px 0;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  transform: scale(1);
+  transition: transform 0.25s ease, box-shadow 0.25s ease !important;
+  will-change: transform; /* ✅ Prevents blur/fuzz on hover */
+}
+
+.loginButton:hover {
+  transform: scale(1.02); /* Subtle, clean zoom */
 }
