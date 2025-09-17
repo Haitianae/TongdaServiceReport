@@ -2248,13 +2248,64 @@ export default function FormComponent({ onLogout, user }) {
   //   reader.readAsDataURL(pdfBlob);
   // };
 
-  const uploadPdfToDrive = async (pdfBlob, filename) => {
-    const customerName = formData.customerName || "";
-    const reader = new FileReader();
+  // const uploadPdfToDrive = async (pdfBlob, filename) => {
+  //   const customerName = formData.customerName || "";
+  //   const reader = new FileReader();
 
+  //   reader.onloadend = async () => {
+  //     let base64 = reader.result.split(",")[1];
+  //     base64 = base64.replace(/\s/g, "");
+
+  //     const payload = new URLSearchParams();
+  //     payload.append("action", "uploadPdf");
+  //     payload.append("pdfBase64", base64);
+  //     payload.append("filename", filename);
+  //     payload.append("customerName", customerName);
+
+  //     try {
+  //       const response = await fetch(GAS_URL, {
+  //         method: "POST",
+  //         headers: { "Content-Type": "application/x-www-form-urlencoded" },
+  //         body: payload.toString(),
+  //       });
+
+  //       const result = await response.json();
+
+  //       if (result.success) {
+  //         notification.success({
+  //           message: "Success",
+  //           description: "PDF uploaded to Drive successfully!",
+  //           placement: "bottomRight",
+  //           duration: 0,
+  //         });
+  //         console.log("Drive Link:", result.url);
+  //       } else {
+  //         notification.error({
+  //           message: "Error",
+  //           description: "Failed to upload PDF in Drive: " + result.message,
+  //           placement: "bottomRight",
+  //           duration: 0,
+  //         });
+  //       }
+  //     } catch (error) {
+  //       notification.error({
+  //         message: "Error",
+  //         description: "Network or server error during PDF upload",
+  //         placement: "bottomRight",
+  //         duration: 0,
+  //       });
+  //       console.error("Upload error:", error);
+  //     }
+  //   };
+
+  //   reader.readAsDataURL(pdfBlob);
+  // };
+
+   const uploadPdfToDrive = async (pdfBlob, filename) => {
+      const customerName = formData.customerName || "";
+    const reader = new FileReader();
     reader.onloadend = async () => {
-      let base64 = reader.result.split(",")[1];
-      base64 = base64.replace(/\s/g, "");
+      const base64 = reader.result.split(",")[1];
 
       const payload = new URLSearchParams();
       payload.append("action", "uploadPdf");
@@ -2262,39 +2313,35 @@ export default function FormComponent({ onLogout, user }) {
       payload.append("filename", filename);
       payload.append("customerName", customerName);
 
-      try {
-        const response = await fetch(GAS_URL, {
+      const response = await fetch(
+       GAS_URL,
+        {
           method: "POST",
-          headers: { "Content-Type": "application/x-www-form-urlencoded" },
+          headers: {
+            "Content-Type": "application/x-www-form-urlencoded",
+          },
           body: payload.toString(),
-        });
-
-        const result = await response.json();
-
-        if (result.success) {
-          notification.success({
-            message: "Success",
-            description: "PDF uploaded to Drive successfully!",
-            placement: "bottomRight",
-            duration: 0,
-          });
-          console.log("Drive Link:", result.url);
-        } else {
-          notification.error({
-            message: "Error",
-            description: "Failed to upload PDF in Drive: " + result.message,
-            placement: "bottomRight",
-            duration: 0,
-          });
         }
-      } catch (error) {
-        notification.error({
-          message: "Error",
-          description: "Network or server error during PDF upload",
+      );
+
+      const result = await response.json();
+      if (result.success) {
+        // message.success("PDF uploaded to Drive");
+        notification.success({
+          message: "Success",
+          description: "PDF uploaded to Drive successfully!",
           placement: "bottomRight",
           duration: 0,
         });
-        console.error("Upload error:", error);
+        console.log("Drive Link:", result.url);
+      } else {
+        // message.error("Failed to upload PDF: " + result.message);
+        notification.error({
+          message: "Error",
+          description: "Failed to upload PDF in Drive: " + result.message,
+          placement: "bottomRight",
+          duration: 0,
+        });
       }
     };
 
