@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/TongdaServiceReport/static/css/main.4488ed46.css",
-    "main.js": "/TongdaServiceReport/static/js/main.0dead143.js",
+    "main.js": "/TongdaServiceReport/static/js/main.be9889cd.js",
     "static/js/239.00603e74.chunk.js": "/TongdaServiceReport/static/js/239.00603e74.chunk.js",
     "static/js/977.c56ba363.chunk.js": "/TongdaServiceReport/static/js/977.c56ba363.chunk.js",
     "static/js/667.1da51aaf.chunk.js": "/TongdaServiceReport/static/js/667.1da51aaf.chunk.js",
@@ -11,13 +11,13 @@
     "static/media/TongdaCenterLogo.png": "/TongdaServiceReport/static/media/TongdaCenterLogo.343d0a6682665da616c0.png",
     "index.html": "/TongdaServiceReport/index.html",
     "main.4488ed46.css.map": "/TongdaServiceReport/static/css/main.4488ed46.css.map",
-    "main.0dead143.js.map": "/TongdaServiceReport/static/js/main.0dead143.js.map",
+    "main.be9889cd.js.map": "/TongdaServiceReport/static/js/main.be9889cd.js.map",
     "239.00603e74.chunk.js.map": "/TongdaServiceReport/static/js/239.00603e74.chunk.js.map",
     "667.1da51aaf.chunk.js.map": "/TongdaServiceReport/static/js/667.1da51aaf.chunk.js.map",
     "453.225d8625.chunk.js.map": "/TongdaServiceReport/static/js/453.225d8625.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.4488ed46.css",
-    "static/js/main.0dead143.js"
+    "static/js/main.be9889cd.js"
   ]
 }
