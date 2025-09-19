@@ -172,7 +172,7 @@ export default function FormComponent({ onLogout, user }) {
   const [selectedTimezone, setSelectedTimezone] = useState("Asia/Dubai");
 
   const GAS_URL =
-    "https://script.google.com/macros/s/AKfycbzNqqbSnFYi_DYsyIXyeIOBzNomQg5Oi_uXVFN6cy8Lo7VQd0vctY2jnkKuWRijFgI4/exec";
+    "https://script.google.com/macros/s/AKfycbyzg4dlD0M0rfjmXHPZogyxYyPR9DtCVFtOI903wGY0cwd0tLWBaujlkytysuTXyGOc/exec";
 
   const machineRegistryColumns = [
     { title: "Serial Number", dataIndex: "Serial Number" },
@@ -1763,7 +1763,8 @@ export default function FormComponent({ onLogout, user }) {
             min={1}
             value={record.quantity}
             onChange={
-              (value) => handleInputChange(record.key, "quantity", value ?? null) // Prevent null issues
+              (value) =>
+                handleInputChange(record.key, "quantity", value ?? null) // Prevent null issues
             }
             onFocus={() =>
               setTooltipVisibility((prev) => ({
@@ -2001,7 +2002,8 @@ export default function FormComponent({ onLogout, user }) {
             min={1}
             value={record.quantity}
             onChange={
-              (value) => handleInputChange(record.key, "quantity", value ?? null) // Prevent null issues
+              (value) =>
+                handleInputChange(record.key, "quantity", value ?? null) // Prevent null issues
             }
             onFocus={() =>
               setTooltipVisibility((prev) => ({
@@ -2301,11 +2303,59 @@ export default function FormComponent({ onLogout, user }) {
   //   reader.readAsDataURL(pdfBlob);
   // };
 
-   const uploadPdfToDrive = async (pdfBlob, filename) => {
-      const customerName = formData.customerName || "";
+  // const uploadPdfToDrive = async (pdfBlob, filename) => {
+  //   const customerName = formData.customerName || "";
+  //   const reader = new FileReader();
+  //   reader.onloadend = async () => {
+  //     // const base64 = reader.result.split(",")[1];
+  //      let base64 = reader.result.split(",")[1];
+  //     base64 = base64.replace(/\s/g, "");
+
+  //     const payload = new URLSearchParams();
+  //     payload.append("action", "uploadPdf");
+  //     payload.append("pdfBase64", base64);
+  //     payload.append("filename", filename);
+  //     payload.append("customerName", customerName);
+
+  //     const response = await fetch(GAS_URL, {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/x-www-form-urlencoded",
+  //       },
+  //       body: payload.toString(),
+  //     });
+
+  //     const result = await response.json();
+  //     if (result.success) {
+  //       // message.success("PDF uploaded to Drive");
+  //       notification.success({
+  //         message: "Success",
+  //         description: "PDF uploaded to Drive successfully!",
+  //         placement: "bottomRight",
+  //         duration: 0,
+  //       });
+  //       console.log("Drive Link:", result.url);
+  //     } else {
+  //       // message.error("Failed to upload PDF: " + result.message);
+  //       notification.error({
+  //         message: "Error",
+  //         description: "Failed to upload PDF in Drive: " + result.message,
+  //         placement: "bottomRight",
+  //         duration: 0,
+  //       });
+  //     }
+  //   };
+
+  //   reader.readAsDataURL(pdfBlob);
+  // };
+
+  const uploadPdfToDrive = async (pdfBlob, filename) => {
+    const customerName = formData.customerName || "";
     const reader = new FileReader();
+
     reader.onloadend = async () => {
-      const base64 = reader.result.split(",")[1];
+      let base64 = reader.result.split(",")[1];
+      base64 = base64.replace(/\s/g, "");
 
       const payload = new URLSearchParams();
       payload.append("action", "uploadPdf");
@@ -2313,42 +2363,46 @@ export default function FormComponent({ onLogout, user }) {
       payload.append("filename", filename);
       payload.append("customerName", customerName);
 
-      const response = await fetch(
-       GAS_URL,
-        {
+      try {
+        const response = await fetch(GAS_URL, {
           method: "POST",
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          },
+          headers: { "Content-Type": "application/x-www-form-urlencoded" },
           body: payload.toString(),
-        }
-      );
-
-      const result = await response.json();
-      if (result.success) {
-        // message.success("PDF uploaded to Drive");
-        notification.success({
-          message: "Success",
-          description: "PDF uploaded to Drive successfully!",
-          placement: "bottomRight",
-          duration: 0,
         });
-        console.log("Drive Link:", result.url);
-      } else {
-        // message.error("Failed to upload PDF: " + result.message);
+
+        const result = await response.json();
+
+        if (result.success) {
+          notification.success({
+            message: "Success",
+            description: "PDF uploaded to Drive successfully!",
+            placement: "bottomRight",
+            duration: 0,
+          });
+          console.log("Drive Link:", result.url);
+        } else {
+          notification.error({
+            message: "Error",
+            description: "Failed to upload PDF in Drive: " + result.message,
+            placement: "bottomRight",
+            duration: 0,
+          });
+        }
+      } catch (error) {
         notification.error({
           message: "Error",
-          description: "Failed to upload PDF in Drive: " + result.message,
+          description: "Network or server error during PDF upload",
           placement: "bottomRight",
           duration: 0,
         });
+        console.error("Upload error:", error);
       }
     };
 
     reader.readAsDataURL(pdfBlob);
   };
 
-  const generatePDF = async (formData, checkboxValues, partsUsed) => {
+  const generatePDF = async (formData, checkboxValues, partsUsed, srn) => {
     const doc = new jsPDF();
     // const startX = 10;
     const pageWidth = doc.internal.pageSize.width;
@@ -3709,324 +3763,362 @@ export default function FormComponent({ onLogout, user }) {
   //   });
   // };
 
-const handleExportToExcel = () => {
-  if (!reportDataList || !reportDataList.length) {
-    notification.warning({
-      message: "Warning",
-      description: "No data was found to export.",
-      placement: "bottomRight",
-    });
-    return;
-  }
-
-  // Helper: try to find a matching value in an object given candidate names (case- & punctuation-insensitive)
-  const findValue = (obj, candidates) => {
-    if (obj == null) return undefined;
-    // if primitive, return as-is
-    if (typeof obj !== "object") return obj;
-    const objKeys = Object.keys(obj);
-    const normal = (s) =>
-      (s || "")
-        .toString()
-        .toLowerCase()
-        .replace(/[^a-z0-9]/g, "");
-    const normCandidates = candidates.map(normal);
-    for (const k of objKeys) {
-      const kn = normal(k);
-      if (normCandidates.includes(kn)) return obj[k];
+  const handleExportToExcel = () => {
+    if (!reportDataList || !reportDataList.length) {
+      notification.warning({
+        message: "Warning",
+        description: "No data was found to export.",
+        placement: "bottomRight",
+      });
+      return;
     }
-    return undefined;
-  };
 
-  // Common candidate key names for part rows
-  // const PART_KEY_MAP = {
-  //   "Part Number": ["Part Number", "partNumber", "part_number", "partno", "part_no", "part"],
-  //   Description: ["Description", "description", "desc"],
-  //   Quantity: ["Quantity", "quantity", "qty", "Qty"],
-  //   Note: ["Note", "note", "notes", "remark"],
-  // };
-
-  const PART_KEY_MAP = {
-  "Part Number": ["Part Number"],
-  Description: ["Description"],
-  Quantity: ["Quantity"],
-  Note: ["Note"],
-};
-
-  // Build exportColumns (same as your original logic)
-  let exportColumns = [...EXPORT_COLUMNS];
-  if (user?.email === "Admin@tongdame.com") {
-    exportColumns = [
-      ...exportColumns,
-      { title: "Start Time", key: "Start time" },
-      { title: "End Time", key: "End time" },
-      { title: "Duration", key: "Duration" },
-      { title: "User Email", key: "User" },
-    ];
-  }
-
-  // Sort by SRN (as before)
-  const sortedData = [...reportDataList].sort((a, b) => {
-    const aSRN = parseInt(a["Service Request Number"], 10);
-    const bSRN = parseInt(b["Service Request Number"], 10);
-    return aSRN - bSRN;
-  });
-
-  // Flatten and format records (one excel row per part entry; if no parts, one row per record)
-  const flatData = [];
-
-  sortedData.forEach((record) => {
-    // try multiple locations/representations for parts
-    let partsUsed =
-      record["Parts Used"] ??
-      record.partsUsed ??
-      record.parts ??
-      record["Parts"] ??
-      [];
-
-    // if it's a JSON string, try to parse
-    if (typeof partsUsed === "string") {
-      try {
-        const parsed = JSON.parse(partsUsed);
-        if (Array.isArray(parsed)) partsUsed = parsed;
-        else if (parsed && typeof parsed === "object") partsUsed = [parsed];
-        else {
-          // fallback to line-splitting or pipe/comma splitting
-          const lines = partsUsed.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
-          if (lines.length > 1) partsUsed = lines;
-          else {
-            const parts = partsUsed.split("|").map((p) => p.trim());
-            if (parts.length > 1) partsUsed = [parts]; // we will handle arrays below
-            else partsUsed = [partsUsed];
-          }
-        }
-      } catch (e) {
-        // not JSON — split lines or treat as single string
-        const lines = partsUsed.split(/\r?\n/).map((l) => l.trim()).filter(Boolean);
-        partsUsed = lines.length ? lines : [partsUsed];
+    // Helper: try to find a matching value in an object given candidate names (case- & punctuation-insensitive)
+    const findValue = (obj, candidates) => {
+      if (obj == null) return undefined;
+      // if primitive, return as-is
+      if (typeof obj !== "object") return obj;
+      const objKeys = Object.keys(obj);
+      const normal = (s) =>
+        (s || "")
+          .toString()
+          .toLowerCase()
+          .replace(/[^a-z0-9]/g, "");
+      const normCandidates = candidates.map(normal);
+      for (const k of objKeys) {
+        const kn = normal(k);
+        if (normCandidates.includes(kn)) return obj[k];
       }
+      return undefined;
+    };
+
+    // Common candidate key names for part rows
+    // const PART_KEY_MAP = {
+    //   "Part Number": ["Part Number", "partNumber", "part_number", "partno", "part_no", "part"],
+    //   Description: ["Description", "description", "desc"],
+    //   Quantity: ["Quantity", "quantity", "qty", "Qty"],
+    //   Note: ["Note", "note", "notes", "remark"],
+    // };
+
+    const PART_KEY_MAP = {
+      "Part Number": ["Part Number"],
+      Description: ["Description"],
+      Quantity: ["Quantity"],
+      Note: ["Note"],
+    };
+
+    // Build exportColumns (same as your original logic)
+    let exportColumns = [...EXPORT_COLUMNS];
+    if (user?.email === "Admin@tongdame.com") {
+      exportColumns = [
+        ...exportColumns,
+        { title: "Start Time", key: "Start time" },
+        { title: "End Time", key: "End time" },
+        { title: "Duration", key: "Duration" },
+        { title: "User Email", key: "User" },
+      ];
     }
 
-    // ensure array
-    if (!Array.isArray(partsUsed)) partsUsed = [partsUsed];
-
-    // detect if partsUsed contains meaningful objects/entries
-    const hasValidParts = partsUsed.some((p) => {
-      if (p == null) return false;
-      if (typeof p === "object") return Object.keys(p).length > 0;
-      if (typeof p === "string") return p.trim().length > 0;
-      if (Array.isArray(p)) return p.length > 0;
-      return false;
+    // Sort by SRN (as before)
+    const sortedData = [...reportDataList].sort((a, b) => {
+      const aSRN = parseInt(a["Service Request Number"], 10);
+      const bSRN = parseInt(b["Service Request Number"], 10);
+      return aSRN - bSRN;
     });
 
-    if (hasValidParts) {
-      // expand each part item into its own row
-      partsUsed.forEach((partItem) => {
-        // If the part is an array like [pt1, ft1, qty, note]
-        const partArray = Array.isArray(partItem) ? partItem : null;
-        const partObj = typeof partItem === "object" && !Array.isArray(partItem) ? partItem : null;
-        const partString = typeof partItem === "string" ? partItem : null;
+    // Flatten and format records (one excel row per part entry; if no parts, one row per record)
+    const flatData = [];
 
+    sortedData.forEach((record) => {
+      // try multiple locations/representations for parts
+      let partsUsed =
+        record["Parts Used"] ??
+        record.partsUsed ??
+        record.parts ??
+        record["Parts"] ??
+        [];
+
+      // if it's a JSON string, try to parse
+      if (typeof partsUsed === "string") {
+        try {
+          const parsed = JSON.parse(partsUsed);
+          if (Array.isArray(parsed)) partsUsed = parsed;
+          else if (parsed && typeof parsed === "object") partsUsed = [parsed];
+          else {
+            // fallback to line-splitting or pipe/comma splitting
+            const lines = partsUsed
+              .split(/\r?\n/)
+              .map((l) => l.trim())
+              .filter(Boolean);
+            if (lines.length > 1) partsUsed = lines;
+            else {
+              const parts = partsUsed.split("|").map((p) => p.trim());
+              if (parts.length > 1)
+                partsUsed = [parts]; // we will handle arrays below
+              else partsUsed = [partsUsed];
+            }
+          }
+        } catch (e) {
+          // not JSON — split lines or treat as single string
+          const lines = partsUsed
+            .split(/\r?\n/)
+            .map((l) => l.trim())
+            .filter(Boolean);
+          partsUsed = lines.length ? lines : [partsUsed];
+        }
+      }
+
+      // ensure array
+      if (!Array.isArray(partsUsed)) partsUsed = [partsUsed];
+
+      // detect if partsUsed contains meaningful objects/entries
+      const hasValidParts = partsUsed.some((p) => {
+        if (p == null) return false;
+        if (typeof p === "object") return Object.keys(p).length > 0;
+        if (typeof p === "string") return p.trim().length > 0;
+        if (Array.isArray(p)) return p.length > 0;
+        return false;
+      });
+
+      if (hasValidParts) {
+        // expand each part item into its own row
+        partsUsed.forEach((partItem) => {
+          // If the part is an array like [pt1, ft1, qty, note]
+          const partArray = Array.isArray(partItem) ? partItem : null;
+          const partObj =
+            typeof partItem === "object" && !Array.isArray(partItem)
+              ? partItem
+              : null;
+          const partString = typeof partItem === "string" ? partItem : null;
+
+          const row = {};
+          exportColumns.forEach((col) => {
+            const key = typeof col === "string" ? col : col.key;
+            let value = "";
+
+            // if this column is a part-specific column -> get from part
+            if (
+              ["Part Number", "Description", "Quantity", "Note"].includes(key)
+            ) {
+              if (partObj) {
+                // try mapped candidates
+                value = findValue(partObj, PART_KEY_MAP[key] || [key]);
+              } else if (partArray) {
+                // map common order: [Part Number, Description, Quantity, Note]
+                const idxMap = {
+                  "Part Number": 0,
+                  Description: 1,
+                  Quantity: 2,
+                  Note: 3,
+                };
+                value = partArray[idxMap[key]] ?? "";
+              } else if (partString) {
+                // try pipe or comma split
+                const pieces = partString.split("|").map((p) => p.trim());
+                if (pieces.length > 1) {
+                  const idxMap = {
+                    "Part Number": 0,
+                    Description: 1,
+                    Quantity: 2,
+                    Note: 3,
+                  };
+                  value = pieces[idxMap[key]] ?? "";
+                } else {
+                  // no structure — put whole string in Part Number for visibility
+                  if (key === "Part Number") value = partString;
+                  else value = "";
+                }
+              }
+            } else {
+              // Non-part columns come from record (parent). Try direct or case-insensitive lookup.
+              let parentVal = record[key];
+              if (parentVal === undefined) {
+                parentVal = findValue(record, [key]);
+              }
+              if (typeof parentVal === "boolean")
+                parentVal = parentVal ? "Yes" : "No";
+              if (
+                parentVal != null &&
+                (key.toLowerCase().includes("date") ||
+                  key.toLowerCase().includes("time"))
+              ) {
+                parentVal = formatDate(parentVal);
+              }
+
+              // special handling for Cause of Failure (as you had before)
+              if (key === "Cause of Failure") {
+                const fullText = parentVal ?? "";
+                const { downloadUrl, filename } =
+                  extractFileInfoFromCauseText(fullText);
+                const cleanedText = fullText
+                  .toString()
+                  .split("\n")
+                  .filter(
+                    (line) =>
+                      !line.trim().startsWith("Image:") &&
+                      !line.trim().startsWith("Filename:")
+                  )
+                  .join(" ")
+                  .trim();
+                let composed = cleanedText;
+                if (filename || downloadUrl) {
+                  composed += `\nFilename: ${filename || "N/A"}\nImage: ${
+                    downloadUrl || "N/A"
+                  }`;
+                }
+                value = composed;
+              } else {
+                value = parentVal ?? "";
+              }
+            }
+
+            row[key] = value ?? "";
+          });
+
+          flatData.push(row);
+        });
+      } else {
+        // No parts -> single row for the record
         const row = {};
         exportColumns.forEach((col) => {
           const key = typeof col === "string" ? col : col.key;
-          let value = "";
-
-          // if this column is a part-specific column -> get from part
-          if (["Part Number", "Description", "Quantity", "Note"].includes(key)) {
-            if (partObj) {
-              // try mapped candidates
-              value = findValue(partObj, PART_KEY_MAP[key] || [key]);
-            } else if (partArray) {
-              // map common order: [Part Number, Description, Quantity, Note]
-              const idxMap = { "Part Number": 0, Description: 1, Quantity: 2, Note: 3 };
-              value = partArray[idxMap[key]] ?? "";
-            } else if (partString) {
-              // try pipe or comma split
-              const pieces = partString.split("|").map((p) => p.trim());
-              if (pieces.length > 1) {
-                const idxMap = { "Part Number": 0, Description: 1, Quantity: 2, Note: 3 };
-                value = pieces[idxMap[key]] ?? "";
-              } else {
-                // no structure — put whole string in Part Number for visibility
-                if (key === "Part Number") value = partString;
-                else value = "";
-              }
-            }
-          } else {
-            // Non-part columns come from record (parent). Try direct or case-insensitive lookup.
-            let parentVal = record[key];
-            if (parentVal === undefined) {
-              parentVal = findValue(record, [key]);
-            }
-            if (typeof parentVal === "boolean") parentVal = parentVal ? "Yes" : "No";
-            if (parentVal != null && (key.toLowerCase().includes("date") || key.toLowerCase().includes("time"))) {
-              parentVal = formatDate(parentVal);
-            }
-
-            // special handling for Cause of Failure (as you had before)
-            if (key === "Cause of Failure") {
-              const fullText = parentVal ?? "";
-              const { downloadUrl, filename } = extractFileInfoFromCauseText(fullText);
-              const cleanedText = fullText
-                .toString()
-                .split("\n")
-                .filter(
-                  (line) =>
-                    !line.trim().startsWith("Image:") &&
-                    !line.trim().startsWith("Filename:")
-                )
-                .join(" ")
-                .trim();
-              let composed = cleanedText;
-              if (filename || downloadUrl) {
-                composed += `\nFilename: ${filename || "N/A"}\nImage: ${downloadUrl || "N/A"}`;
-              }
-              value = composed;
-            } else {
-              value = parentVal ?? "";
+          let value = record[key];
+          if (value === undefined) value = findValue(record, [key]);
+          if (typeof value === "boolean") value = value ? "Yes" : "No";
+          if (
+            value != null &&
+            (key.toLowerCase().includes("date") ||
+              key.toLowerCase().includes("time"))
+          ) {
+            value = formatDate(value);
+          }
+          if (key === "Cause of Failure") {
+            const fullText = value ?? "";
+            const { downloadUrl, filename } =
+              extractFileInfoFromCauseText(fullText);
+            const cleanedText = fullText
+              .toString()
+              .split("\n")
+              .filter(
+                (line) =>
+                  !line.trim().startsWith("Image:") &&
+                  !line.trim().startsWith("Filename:")
+              )
+              .join(" ")
+              .trim();
+            value = cleanedText;
+            if (filename || downloadUrl) {
+              value += `\nFilename: ${filename || "N/A"}\nImage: ${
+                downloadUrl || "N/A"
+              }`;
             }
           }
-
           row[key] = value ?? "";
         });
-
         flatData.push(row);
-      });
-    } else {
-      // No parts -> single row for the record
-      const row = {};
-      exportColumns.forEach((col) => {
-        const key = typeof col === "string" ? col : col.key;
-        let value = record[key];
-        if (value === undefined) value = findValue(record, [key]);
-        if (typeof value === "boolean") value = value ? "Yes" : "No";
-        if (value != null && (key.toLowerCase().includes("date") || key.toLowerCase().includes("time"))) {
-          value = formatDate(value);
-        }
-        if (key === "Cause of Failure") {
-          const fullText = value ?? "";
-          const { downloadUrl, filename } = extractFileInfoFromCauseText(fullText);
-          const cleanedText = fullText
-            .toString()
-            .split("\n")
-            .filter(
-              (line) =>
-                !line.trim().startsWith("Image:") &&
-                !line.trim().startsWith("Filename:")
-            )
-            .join(" ")
-            .trim();
-          value = cleanedText;
-          if (filename || downloadUrl) {
-            value += `\nFilename: ${filename || "N/A"}\nImage: ${downloadUrl || "N/A"}`;
-          }
-        }
-        row[key] = value ?? "";
-      });
-      flatData.push(row);
+      }
+    });
+
+    // Build worksheet data and sheet
+    const worksheetData = [
+      exportColumns.map((col) => (typeof col === "string" ? col : col.title)),
+      ...flatData.map((item) =>
+        exportColumns.map(
+          (col) => item[typeof col === "string" ? col : col.key]
+        )
+      ),
+    ];
+
+    const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+
+    // Apply styles (same as you had)
+    const range = XLSX.utils.decode_range(worksheet["!ref"]);
+    for (let R = range.s.r; R <= range.e.r; ++R) {
+      for (let C = range.s.c; C <= range.e.c; ++C) {
+        const cellRef = XLSX.utils.encode_cell({ r: R, c: C });
+        if (!worksheet[cellRef]) continue;
+
+        const isHeader = R === 0;
+        worksheet[cellRef].s = {
+          font: { bold: isHeader, sz: isHeader ? 14 : 11, name: "Arial" },
+          alignment: { wrapText: true, vertical: "center", horizontal: "left" },
+          fill: isHeader ? { fgColor: { rgb: "FFF200" } } : undefined,
+          border: {
+            top: { style: "thin", color: { rgb: "000000" } },
+            bottom: { style: "thin", color: { rgb: "000000" } },
+            left: { style: "thin", color: { rgb: "000000" } },
+            right: { style: "thin", color: { rgb: "000000" } },
+          },
+        };
+      }
     }
-  });
 
-  // Build worksheet data and sheet
-  const worksheetData = [
-    exportColumns.map((col) => (typeof col === "string" ? col : col.title)),
-    ...flatData.map((item) =>
-      exportColumns.map((col) => item[typeof col === "string" ? col : col.key])
-    ),
-  ];
+    // Column widths (same table as you had)
+    const columnWidths = {
+      "Service Request Number": 32,
+      "Customer Name": 45,
+      "Machine Type": 45,
+      Address: 40,
+      "Serial Number": 45,
+      Contact: 30,
+      Telephone: 40,
+      "Installation Date": 30,
+      "Departure Date": 30,
+      "Return Date": 18,
+      "Work Time": 30,
+      "Service Technician": 30,
+      "Installation/Commission": 40,
+      Maintenance: 20,
+      Defect: 20,
+      "Customer Visit (Report)": 40,
+      Other: 20,
+      "Description of work/of defect/failure mode": 100,
+      "Cause of Failure": 100,
+      "Notes/Further action required": 100,
+      "Part Number": 40,
+      Description: 50,
+      Quantity: 20,
+      Note: 40,
+      "F.O.C Commissioning": 40,
+      "F.O.C Maintenance": 40,
+      Guarantee: 25,
+      "Chargeable Maintenance": 40,
+      "Customer Visit (Service)": 50,
+      "Service contract": 40,
+      Goodwill: 20,
+      "Start Time": 20,
+      "End Time": 20,
+      Duration: 20,
+      "User Email": 40,
+    };
 
-  const worksheet = XLSX.utils.aoa_to_sheet(worksheetData);
+    worksheet["!cols"] = exportColumns.map((col) => ({
+      wch: columnWidths[typeof col === "string" ? col : col.title] || 25,
+    }));
 
-  // Apply styles (same as you had)
-  const range = XLSX.utils.decode_range(worksheet["!ref"]);
-  for (let R = range.s.r; R <= range.e.r; ++R) {
-    for (let C = range.s.c; C <= range.e.c; ++C) {
-      const cellRef = XLSX.utils.encode_cell({ r: R, c: C });
-      if (!worksheet[cellRef]) continue;
+    // Create workbook and download
+    const workbook = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(workbook, worksheet, "Service Report");
 
-      const isHeader = R === 0;
-      worksheet[cellRef].s = {
-        font: { bold: isHeader, sz: isHeader ? 14 : 11, name: "Arial" },
-        alignment: { wrapText: true, vertical: "center", horizontal: "left" },
-        fill: isHeader ? { fgColor: { rgb: "FFF200" } } : undefined,
-        border: {
-          top: { style: "thin", color: { rgb: "000000" } },
-          bottom: { style: "thin", color: { rgb: "000000" } },
-          left: { style: "thin", color: { rgb: "000000" } },
-          right: { style: "thin", color: { rgb: "000000" } },
-        },
-      };
-    }
-  }
+    const excelBuffer = XLSX.write(workbook, {
+      bookType: "xlsx",
+      type: "array",
+    });
+    const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
 
-  // Column widths (same table as you had)
-  const columnWidths = {
-    "Service Request Number": 32,
-    "Customer Name": 45,
-    "Machine Type": 45,
-    Address: 40,
-    "Serial Number": 45,
-    Contact: 30,
-    Telephone: 40,
-    "Installation Date": 30,
-    "Departure Date": 30,
-    "Return Date": 18,
-    "Work Time": 30,
-    "Service Technician": 30,
-    "Installation/Commission": 40,
-    Maintenance: 20,
-    Defect: 20,
-    "Customer Visit (Report)": 40,
-    Other: 20,
-    "Description of work/of defect/failure mode": 100,
-    "Cause of Failure": 100,
-    "Notes/Further action required": 100,
-    "Part Number": 40,
-    Description: 50,
-    Quantity: 20,
-    Note: 40,
-    "F.O.C Commissioning": 40,
-    "F.O.C Maintenance": 40,
-    Guarantee: 25,
-    "Chargeable Maintenance": 40,
-    "Customer Visit (Service)": 50,
-    "Service contract": 40,
-    Goodwill: 20,
-    "Start Time": 20,
-    "End Time": 20,
-    Duration: 20,
-    "User Email": 40,
+    saveAs(
+      blob,
+      `Tongda_Service_Report_Excel_Exported_On_${dayjs().format(
+        "DD-MM-YY_HH-mm-ss"
+      )}.xlsx`
+    );
+
+    notification.success({
+      message: "Success",
+      description: "Data Exported Successfully",
+      placement: "bottomRight",
+    });
   };
-
-  worksheet["!cols"] = exportColumns.map((col) => ({
-    wch: columnWidths[typeof col === "string" ? col : col.title] || 25,
-  }));
-
-  // Create workbook and download
-  const workbook = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(workbook, worksheet, "Service Report");
-
-  const excelBuffer = XLSX.write(workbook, {
-    bookType: "xlsx",
-    type: "array",
-  });
-  const blob = new Blob([excelBuffer], { type: "application/octet-stream" });
-
-  saveAs(
-    blob,
-    `Tongda_Service_Report_Excel_Exported_On_${dayjs().format(
-      "DD-MM-YY_HH-mm-ss"
-    )}.xlsx`
-  );
-
-  notification.success({
-    message: "Success",
-    description: "Data Exported Successfully",
-    placement: "bottomRight",
-  });
-};
-
 
   const handleRefresh = async () => {
     setRefreshing(true);
@@ -4059,18 +4151,24 @@ const handleExportToExcel = () => {
     setIsSubmitting(true);
     setLoading(true);
 
+    const stopSubmitting = () => {
+      setLoading(false);
+      setIsSubmitting(false);
+      isSubmittingRef.current = false;
+    };
+
     try {
       // if (!srn) return message.error("SRN missing.");
 
-      if (!srn) {
-        // message.error("SRN missing.");
-        notification.error({
-          message: "Error",
-          description: "Service Request Number is missing.",
-          placement: "bottomRight",
-        });
-        return;
-      }
+      // if (!srn) {
+      //   // message.error("SRN missing.");
+      //   notification.error({
+      //     message: "Error",
+      //     description: "Service Request Number is missing.",
+      //     placement: "bottomRight",
+      //   });
+      //   return;
+      // }
 
       const isTooLong =
         serialNumber.length > 100 ||
@@ -4086,6 +4184,7 @@ const handleExportToExcel = () => {
             "Some inputs exceed allowed limits. Please check and fix them before submitting.",
           placement: "bottomRight", // Optional: can be 'topLeft', 'topRight', 'bottomLeft', 'bottomRight'
         });
+        stopSubmitting();
 
         return;
       }
@@ -4101,6 +4200,8 @@ const handleExportToExcel = () => {
             "Please ensure the manager's signature is uploaded, and the technician's and customer's signatures are saved before submitting.",
           placement: "bottomRight",
         });
+        stopSubmitting();
+
         return;
       }
 
@@ -4136,6 +4237,8 @@ const handleExportToExcel = () => {
           description: "Please enter valid dates in DD-MM-YYYY format.",
           placement: "bottomRight",
         });
+        stopSubmitting();
+
         return;
       }
 
@@ -4174,7 +4277,9 @@ const handleExportToExcel = () => {
             description: `Image upload failed: ${uploadResult.message}`,
             placement: "bottomRight",
           });
-          setIsSubmitting(false);
+          // setIsSubmitting(false);
+          stopSubmitting();
+
           return;
         }
         causeImageUrl = uploadResult.imageUrl;
@@ -4183,7 +4288,7 @@ const handleExportToExcel = () => {
       // ✅ 2. Build form payload
       const formData = new FormData();
       formData.append("action", "new");
-      formData.append("srn", srn);
+      // formData.append("srn", srn);
       formData.append("customerName", values.customerName);
       formData.append("machineType", values.machineType);
       formData.append("address", address);
@@ -4248,15 +4353,28 @@ const handleExportToExcel = () => {
 
       const result = await res.json();
 
-      if (!result.success) {
+      // if (!result.success) {
+      //   notification.error({
+      //     message: "Error",
+      //     description: result.message || "Form Submission failed.",
+      //     placement: "bottomRight",
+      //   });
+      //   // alert("Error: " + result.message);
+      //   return;
+      // }
+
+      if (!result.success || !result.srn) {
         notification.error({
           message: "Error",
-          description: result.message || "Form Submission failed.",
+          description:
+            result.message || "Form submission failed. No SRN returned.",
           placement: "bottomRight",
         });
-        // alert("Error: " + result.message);
+        stopSubmitting();
+
         return;
       }
+      const newSRN = result.srn;
 
       notification.success({
         message: "Success",
@@ -4283,7 +4401,9 @@ const handleExportToExcel = () => {
       values.serviceType?.forEach((option) => (checkboxValues[option] = true));
 
       const pdfPayload = {
-        srn,
+        // srn,
+        srn: newSRN,
+
         customerName: values.customerName,
         machineType: values.machineType,
         address,
@@ -4303,7 +4423,7 @@ const handleExportToExcel = () => {
         signatures,
       };
 
-      await generatePDF(pdfPayload, checkboxValues, cleanedPartsUsed);
+      await generatePDF(pdfPayload, checkboxValues, cleanedPartsUsed, newSRN);
 
       form.resetFields();
       setAddress("");
@@ -4337,11 +4457,36 @@ const handleExportToExcel = () => {
       await fetchSRN();
       loadAllCustomerData();
     } catch (err) {
+      // notification.error({
+      //   message: "Error",
+      //   description: "Oops, something went wrong!",
+      //   placement: "bottomRight",
+      // });
+      let errorMsg;
+
+      if (!navigator.onLine) {
+        // Browser knows it's offline
+        errorMsg = "You are offline. Please check your internet connection.";
+      } else if (
+        err.message.includes("Failed to fetch") ||
+        err.message.includes("ERR_INTERNET_DISCONNECTED")
+      ) {
+        // Covers cases where fetch fails due to disconnection
+        errorMsg =
+          "Network error: Unable to reach the server. Please check your connection.";
+      } else {
+        // Fallback: show the real error
+        errorMsg = err.message || "Unknown error occurred.";
+      }
+
       notification.error({
         message: "Error",
-        description: "Oops, something went wrong!",
+        description: errorMsg,
         placement: "bottomRight",
+        duration: 0,
       });
+
+      // console.error("Form submission failed:", err);
     } finally {
       setLoading(false);
       setIsSubmitting(false);
@@ -4607,9 +4752,28 @@ const handleExportToExcel = () => {
       setEditSignatureManager(null);
       loadAllCustomerData();
     } catch (err) {
+      // notification.error({
+      //   message: "Error",
+      //   description: "Failed to submit update: " + err.message,
+      //   placement: "bottomRight",
+      // });
+      let errorMsg;
+
+      if (!navigator.onLine) {
+        errorMsg = "You are offline. Please check your internet connection.";
+      } else if (
+        err.message.includes("Failed to fetch") ||
+        err.message.includes("ERR_INTERNET_DISCONNECTED")
+      ) {
+        errorMsg =
+          "Network error: Unable to reach the server. Please try again later.";
+      } else {
+        errorMsg = err?.message || "Unknown error occurred.";
+      }
+
       notification.error({
         message: "Error",
-        description: "Failed to submit update: " + err.message,
+        description: errorMsg,
         placement: "bottomRight",
       });
     } finally {
