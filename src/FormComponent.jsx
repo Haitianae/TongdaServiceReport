@@ -170,9 +170,10 @@ export default function FormComponent({ onLogout, user }) {
   const [endTime, setEndTime] = useState(null);
   const [duration, setDuration] = useState(null);
   const [selectedTimezone, setSelectedTimezone] = useState("Asia/Dubai");
+  const [downloadLoader, setDownloadLoader] = useState(false);
 
   const GAS_URL =
-    "https://script.google.com/macros/s/AKfycbyzg4dlD0M0rfjmXHPZogyxYyPR9DtCVFtOI903wGY0cwd0tLWBaujlkytysuTXyGOc/exec";
+    "https://script.google.com/macros/s/AKfycbx5_f25-vVnNHt4DqhRtKhDDP_9Gl2o72TtkX81ZjvBtxarufTulML88_MeyxqaUNdowg/exec";
 
   const machineRegistryColumns = [
     { title: "Serial Number", dataIndex: "Serial Number" },
@@ -2490,19 +2491,33 @@ export default function FormComponent({ onLogout, user }) {
     //   machineLogoWidth,
     //   machineLogoHeight
     // );
-    const centX = (pageWidth - haitianLogoWidth) / 2;
-    doc.addImage(TongdaLogo, "PNG", centX, 5, 50, 15);
+    // const centX = (pageWidth - haitianLogoWidth) / 2; 
+    // doc.addImage(TongdaLogo, "PNG", centX, 5, 50, 15);
+
+    // Replace centX with startX
+const logoX = 4; // or just 10
+const logoY = 5; 
+const logoWidth = 50; 
+const logoHeight = 15;
+
+doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
+
 
     doc.setFont("Emirates", "bold");
     doc.setFontSize(11);
-    doc.setTextColor("#0C3C74");
+    // doc.setTextColor("#0C3C74");
+    doc.setTextColor(208, 37, 40);
     doc.text("Service Report", pageWidth - 60, 12);
     doc.setFontSize(11);
 
-    doc.setTextColor(255, 0, 0); // Red color for SRN number
+    // doc.setTextColor(255, 0, 0);
+        doc.setTextColor(208, 37, 40);
+
     doc.text("No.", 150, 18);
 
-    doc.setTextColor(255, 0, 0); // Red color for SRN number
+    // doc.setTextColor(255, 0, 0); 
+            doc.setTextColor(208, 37, 40);
+
     doc.text(`${srn || "N/A"}`, 157, 18);
     doc.setDrawColor(12, 60, 116);
     doc.setLineWidth(0.5);
@@ -2921,7 +2936,8 @@ export default function FormComponent({ onLogout, user }) {
     const centerX = doc.internal.pageSize.width / 2; // Get center alignment
     const leftAlignX = 40; // Adjust for left-side text
     const rightAlignX = doc.internal.pageSize.width - 80; // Adjust for right-side text
-    doc.setTextColor("#0C3C74");
+    // doc.setTextColor("#0C3C74");
+            doc.setTextColor(208, 37, 40);
 
     // **Company Name - Centered**
     const lineY = footerY - 5; // Adjust 5 units above the text
@@ -3052,19 +3068,34 @@ export default function FormComponent({ onLogout, user }) {
     //   machineLogoWidth,
     //   machineLogoHeight
     // );
-    const centX = (pageWidth - haitianLogoWidth) / 2;
-    doc.addImage(TongdaLogo, "PNG", centX, 5, 50, 15);
+    // const centX = (pageWidth - haitianLogoWidth) / 2;
+    // doc.addImage(TongdaLogo, "PNG", centX, 5, 50, 15);
+
+    // Replace centX with startX
+const logoX = 3; // or just 10
+const logoY = 5; 
+const logoWidth = 50; 
+const logoHeight = 15;
+
+doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
+
 
     doc.setFont("Emirates", "bold");
     doc.setFontSize(11);
-    doc.setTextColor("#0C3C74");
+    // doc.setTextColor("#0C3C74");
+        doc.setTextColor(208, 37, 40);
+
     doc.text("Service Report", pageWidth - 60, 12);
     doc.setFontSize(11);
 
-    doc.setTextColor(255, 0, 0); // Red color for SRN number
+    // doc.setTextColor(255, 0, 0); // Red color for SRN number
+        doc.setTextColor(208, 37, 40);
+
     doc.text("No.", 150, 18);
 
-    doc.setTextColor(255, 0, 0); // Red color for SRN number
+    // doc.setTextColor(255, 0, 0); // Red color for SRN number
+        doc.setTextColor(208, 37, 40);
+
     doc.text(`${editsrn || "N/A"}`, 157, 18);
     doc.setDrawColor(12, 60, 116);
     doc.setLineWidth(0.5);
@@ -3482,7 +3513,9 @@ export default function FormComponent({ onLogout, user }) {
     const centerX = doc.internal.pageSize.width / 2; // Get center alignment
     const leftAlignX = 40; // Adjust for left-side text
     const rightAlignX = doc.internal.pageSize.width - 80; // Adjust for right-side text
-    doc.setTextColor("#0C3C74");
+    // doc.setTextColor("#0C3C74");
+        doc.setTextColor(208, 37, 40);
+
 
     // **Company Name - Centered**
     const lineY = footerY - 5; // Adjust 5 units above the text
@@ -4857,6 +4890,7 @@ export default function FormComponent({ onLogout, user }) {
   };
 
   const handleDownloadPDF = async (srn) => {
+    setDownloadLoader(true);
     if (!srn) {
       notification.error({
         message: "Error",
@@ -4898,6 +4932,8 @@ export default function FormComponent({ onLogout, user }) {
         description: "Error fetching PDF link.",
         placement: "bottomRight",
       });
+    }finally{
+      setDownloadLoader(false);
     }
   };
 
@@ -5956,8 +5992,10 @@ export default function FormComponent({ onLogout, user }) {
                       icon={<DownloadOutlined />}
                       onClick={() => handleDownloadPDF(editsrn)}
                       className="haitianbutton"
+                      loading={downloadLoader}
+                      disabled={downloadLoader}
                     >
-                      Download PDF
+                     {downloadLoader ? "Downloading..." : "Download PDF"}
                     </Button>
                     <Button
                       size="large"
