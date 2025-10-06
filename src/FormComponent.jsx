@@ -173,7 +173,7 @@ export default function FormComponent({ onLogout, user }) {
   const [downloadLoader, setDownloadLoader] = useState(false);
 
   const GAS_URL =
-    "https://script.google.com/macros/s/AKfycbx5_f25-vVnNHt4DqhRtKhDDP_9Gl2o72TtkX81ZjvBtxarufTulML88_MeyxqaUNdowg/exec";
+    "https://script.google.com/macros/s/AKfycbwfYbwo6e5HTxG_L27u-YxAnvgjKnryyUlxqwkiiH_S6SOA2hvIqhxzZE8nEg1GEoJ0/exec";
 
   const machineRegistryColumns = [
     { title: "Serial Number", dataIndex: "Serial Number" },
