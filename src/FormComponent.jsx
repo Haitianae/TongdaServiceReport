@@ -46,8 +46,8 @@ import jsPDF from "jspdf";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "antd/dist/reset.css";
 
-import TongdaLogo from "./Images/TongdaLogo.png";
-import TongdaCenterLogo from "./Images/TongdaCenterLogo.png";
+import TongdaLogo from "./Images/TongdaMiddleEastLogo.png";
+import TongdaCenterLogo from "./Images/TongdaMiddleEastLogo.png";
 
 import "./App.css";
 import TextArea from "antd/es/input/TextArea";
@@ -83,6 +83,7 @@ const reportOptions = [
   "Defect",
   // "Customer Visit",
   "Customer Visit (Report)",
+  "AMC",
   "Other",
 ];
 
@@ -173,14 +174,14 @@ export default function FormComponent({ onLogout, user }) {
   const [downloadLoader, setDownloadLoader] = useState(false);
 
   const GAS_URL =
-    "https://script.google.com/macros/s/AKfycbwfYbwo6e5HTxG_L27u-YxAnvgjKnryyUlxqwkiiH_S6SOA2hvIqhxzZE8nEg1GEoJ0/exec";
+    "https://script.google.com/macros/s/AKfycbyoP_dnLUXdx76iTeVoVXBv6YHGiAyjiRTTtub86VB6po2uBI69MK10UGKPLr6xXgiy/exec";
 
   const machineRegistryColumns = [
     { title: "Serial Number", dataIndex: "Serial Number" },
     { title: "Service Request Number", dataIndex: "Service Request Number" },
     { title: "Machine Serial Number", dataIndex: "Machine Serial Number" },
     { title: "Customer Name", dataIndex: "Customer Name" },
-    { title: "Machine Type", dataIndex: "Machine Type" },
+    { title: "Machine Model", dataIndex: "Machine Model" },
   ];
   const [machineRegistryData, setMachineRegistryData] = useState([]);
   const [registrySearch, setRegistrySearch] = useState("");
@@ -257,7 +258,7 @@ export default function FormComponent({ onLogout, user }) {
         }
       })
       .catch((err) => {
-        console.error("Failed to fetch Machine Registry data:", err);
+        // console.error("Failed to fetch Machine Registry data:", err);
         notification.error({
           message: "Error",
           description: "Error fetching Machine Registry data",
@@ -681,6 +682,7 @@ export default function FormComponent({ onLogout, user }) {
         "Maintenance",
         "Defect",
         "Customer Visit (Report)",
+        "AMC",
         "Other",
       ];
 
@@ -735,7 +737,7 @@ export default function FormComponent({ onLogout, user }) {
         address: selectedRecord["Address"],
         contact: selectedRecord["Contact"],
         telephone: selectedRecord["Telephone"],
-        machineType: selectedRecord["Machine Type"],
+        machineModel: selectedRecord["Machine Model"],
         serialNumber: selectedRecord["Serial Number"],
         installationDate: selectedRecord["Installation Date"]
           ? parseDate(selectedRecord["Installation Date"])
@@ -843,6 +845,7 @@ export default function FormComponent({ onLogout, user }) {
       "Maintenance",
       "Defect",
       "Customer Visit (Report)",
+      "AMC",
       "Other",
     ];
 
@@ -883,7 +886,7 @@ export default function FormComponent({ onLogout, user }) {
       address: selectedRecord["Address"],
       contact: selectedRecord["Contact"],
       telephone: selectedRecord["Telephone"],
-      machineType: selectedRecord["Machine Type"],
+      machineModel: selectedRecord["Machine Model"],
       serialNumber: selectedRecord["Serial Number"],
       installationDate: parseDate(selectedRecord["Installation Date"]),
       departureDate: parseDate(selectedRecord["Departure Date"]),
@@ -1109,7 +1112,7 @@ export default function FormComponent({ onLogout, user }) {
           address: data["Address"] || "",
           contact: data["Contact"] || "",
           telephone: data["Telephone"] || "",
-          machineType: data["Machine Type"] || "",
+          machineModel: data["Machine Model"] || "",
           serialNumber: data["Serial Number"] || "",
           // add more mappings as needed
         });
@@ -1222,13 +1225,13 @@ export default function FormComponent({ onLogout, user }) {
 
   const handleDescriptionTextChange = (e) => {
     const input = e.target.value;
-    const limited = enforceTextLimit(input, 4, 1000);
+    const limited = enforceTextLimit(input, 5, 1250);
 
     if (input !== limited) {
       notification.warning({
         message: "Warning",
         description:
-          "Description input was limited to 4 lines, 995 characters. Excess removed.",
+          "Description input was limited to 5 lines, 1243 characters. Excess removed.",
         placement: "bottomRight",
       });
     }
@@ -1312,13 +1315,13 @@ export default function FormComponent({ onLogout, user }) {
 
   const handleEditDescriptionChange = (e) => {
     const input = e.target.value;
-    const limited = enforceTextLimit(input, 4, 1000);
+    const limited = enforceTextLimit(input, 5, 1250);
 
     if (input !== limited) {
       notification.warning({
         message: "Warning",
         description:
-          "Description input was limited to 4 lines, 995 characters. Excess removed.",
+          "Description input was limited to 5 lines, 1243 characters. Excess removed.",
         placement: "bottomRight",
       });
     }
@@ -1400,7 +1403,7 @@ export default function FormComponent({ onLogout, user }) {
 
     // Enforce row limits
     if (lines.length > maxRows[field]) {
-      console.log("Too many lines for", field);
+      // console.log("Too many lines for", field);
 
       notification.warning({
         message: "Warning",
@@ -1564,7 +1567,7 @@ export default function FormComponent({ onLogout, user }) {
   const Tablecolumns = [
     { title: "Service Request Number", dataIndex: "Service Request Number" },
     { title: "Customer Name", dataIndex: "Customer Name" },
-    { title: "Machine Type", dataIndex: "Machine Type" },
+    { title: "Machine Model", dataIndex: "Machine Model" },
     { title: "Address", dataIndex: "Address" },
     { title: "Serial Number", dataIndex: "Serial Number" },
     { title: "Contact", dataIndex: "Contact" },
@@ -1643,7 +1646,7 @@ export default function FormComponent({ onLogout, user }) {
             title: "Start Time",
             dataIndex: "Start time",
             render: (time) => {
-              console.log("Time:", time);
+              // console.log("Time:", time);
               return time || "-";
             },
           },
@@ -2380,7 +2383,7 @@ export default function FormComponent({ onLogout, user }) {
             placement: "bottomRight",
             duration: 0,
           });
-          console.log("Drive Link:", result.url);
+          // console.log("Drive Link:", result.url);
         } else {
           notification.error({
             message: "Error",
@@ -2396,7 +2399,7 @@ export default function FormComponent({ onLogout, user }) {
           placement: "bottomRight",
           duration: 0,
         });
-        console.error("Upload error:", error);
+        // console.error("Upload error:", error);
       }
     };
 
@@ -2430,7 +2433,7 @@ export default function FormComponent({ onLogout, user }) {
       Contact: 35,
       Telephone: 35,
       "Service Technician": 35,
-      "Machine Type": 30,
+      "Machine Model": 30,
       "Serial No.": 30,
       "Work Time": 30,
       "Departure Date": 35,
@@ -2491,17 +2494,16 @@ export default function FormComponent({ onLogout, user }) {
     //   machineLogoWidth,
     //   machineLogoHeight
     // );
-    // const centX = (pageWidth - haitianLogoWidth) / 2; 
+    // const centX = (pageWidth - haitianLogoWidth) / 2;
     // doc.addImage(TongdaLogo, "PNG", centX, 5, 50, 15);
 
     // Replace centX with startX
-const logoX = 4; // or just 10
-const logoY = 5; 
-const logoWidth = 50; 
-const logoHeight = 15;
+    const logoX = 10; // or just 10
+    const logoY = 5;
+    const logoWidth = 50;
+    const logoHeight = 15;
 
-doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
-
+    doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
 
     doc.setFont("Emirates", "bold");
     doc.setFontSize(11);
@@ -2511,12 +2513,12 @@ doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
     doc.setFontSize(11);
 
     // doc.setTextColor(255, 0, 0);
-        doc.setTextColor(208, 37, 40);
+    doc.setTextColor(208, 37, 40);
 
     doc.text("No.", 150, 18);
 
-    // doc.setTextColor(255, 0, 0); 
-            doc.setTextColor(208, 37, 40);
+    // doc.setTextColor(255, 0, 0);
+    doc.setTextColor(208, 37, 40);
 
     doc.text(`${srn || "N/A"}`, 157, 18);
     doc.setDrawColor(12, 60, 116);
@@ -2526,7 +2528,7 @@ doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
 
     nextY += 2;
     addField("Customer", formData.customerName, startX, nextY);
-    addField("Machine Type", formData.machineType, rightX, nextY);
+    addField("Machine Model", formData.machineModel, rightX, nextY);
     nextY = 29;
 
     let addressSpaceUsed = addField(
@@ -2587,6 +2589,7 @@ doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
       "Defect",
       // "Customer Visit",
       "Customer Visit (Report)",
+      "AMC",
       "Other",
     ];
     const spacing = [48, 33, 25, 48, 20];
@@ -2633,7 +2636,7 @@ doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
     doc.text(description, startX, nextY);
     // nextY += description.length * 2;
 
-    nextY = 140;
+    nextY = 155;
     doc.setFont("Emirates", "bold");
     doc.setTextColor("#0C3C74");
     doc.text("Cause of failure:", startX, nextY);
@@ -2647,7 +2650,7 @@ doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
     doc.text(causeOfFailure, startX, nextY);
     // nextY += causeOfFailure.length * 2;
 
-    nextY = 169;
+    nextY = 183;
     doc.setTextColor("#0C3C74");
     doc.setFont("Emirates", "bold");
     doc.text("Notes/Further action required:", startX, nextY);
@@ -2657,7 +2660,7 @@ doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
     const notes = doc.splitTextToSize(formData.notes || "N/A", maxWidth);
     doc.text(notes, startX, nextY);
 
-    nextY = 173;
+    nextY = 188;
     const colWidths = [40, 65, 18, 65]; // Column widths
     const rowHeight = 8; // Row height
 
@@ -2779,7 +2782,7 @@ doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
     }
 
     doc.setFont("Emirates", "bold");
-    nextY = 214;
+    nextY = 229;
     doc.setTextColor("#0C3C74");
     doc.text("Service Type", 10, nextY);
     nextY -= 2; // Space after the title
@@ -2850,7 +2853,7 @@ doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
       optionServiceX += optionSpacing;
     });
 
-    nextY = 229;
+    nextY = 243;
     const addSignatures = (signatures, nextY) => {
       doc.setFont("Emirates", "bold");
 
@@ -2932,12 +2935,12 @@ doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
     // Call the function to add signatures
     nextY = addSignatures(formData.signatures, nextY);
 
-    const footerY = pageHeight - 20; // Adjust footer position from bottom
+    const footerY = pageHeight - 13; // Adjust footer position from bottom
     const centerX = doc.internal.pageSize.width / 2; // Get center alignment
     const leftAlignX = 40; // Adjust for left-side text
     const rightAlignX = doc.internal.pageSize.width - 80; // Adjust for right-side text
     // doc.setTextColor("#0C3C74");
-            doc.setTextColor(208, 37, 40);
+    doc.setTextColor(208, 37, 40);
 
     // **Company Name - Centered**
     const lineY = footerY - 5; // Adjust 5 units above the text
@@ -3008,7 +3011,7 @@ doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
       Contact: 35,
       Telephone: 35,
       "Service Technician": 35,
-      "Machine Type": 30,
+      "Machine Model": 30,
       "Serial No.": 30,
       "Work Time": 30,
       "Departure Date": 35,
@@ -3072,29 +3075,28 @@ doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
     // doc.addImage(TongdaLogo, "PNG", centX, 5, 50, 15);
 
     // Replace centX with startX
-const logoX = 3; // or just 10
-const logoY = 5; 
-const logoWidth = 50; 
-const logoHeight = 15;
+    const logoX = 10; // or just 10
+    const logoY = 5;
+    const logoWidth = 50;
+    const logoHeight = 15;
 
-doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
-
+    doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
 
     doc.setFont("Emirates", "bold");
     doc.setFontSize(11);
     // doc.setTextColor("#0C3C74");
-        doc.setTextColor(208, 37, 40);
+    doc.setTextColor(208, 37, 40);
 
     doc.text("Service Report", pageWidth - 60, 12);
     doc.setFontSize(11);
 
     // doc.setTextColor(255, 0, 0); // Red color for SRN number
-        doc.setTextColor(208, 37, 40);
+    doc.setTextColor(208, 37, 40);
 
     doc.text("No.", 150, 18);
 
     // doc.setTextColor(255, 0, 0); // Red color for SRN number
-        doc.setTextColor(208, 37, 40);
+    doc.setTextColor(208, 37, 40);
 
     doc.text(`${editsrn || "N/A"}`, 157, 18);
     doc.setDrawColor(12, 60, 116);
@@ -3104,7 +3106,7 @@ doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
 
     nextY += 2;
     addField("Customer", formData.customerName, startX, nextY);
-    addField("Machine Type", formData.machineType, rightX, nextY);
+    addField("Machine Model", formData.machineModel, rightX, nextY);
     nextY = 29;
 
     let addressSpaceUsed = addField(
@@ -3164,6 +3166,7 @@ doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
       "Defect",
       // "Customer Visit",
       "Customer Visit (Report)",
+      "AMC",
       "Other",
     ];
     const spacing = [48, 33, 25, 48, 20];
@@ -3210,7 +3213,7 @@ doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
     doc.text(description, startX, nextY);
     // nextY += description.length * 2;
 
-    nextY = 140;
+    nextY = 155;
     doc.setFont("Emirates", "bold");
     doc.setTextColor("#0C3C74");
     doc.text("Cause of failure:", startX, nextY);
@@ -3224,7 +3227,7 @@ doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
     doc.text(causeOfFailure, startX, nextY);
     // nextY += causeOfFailure.length * 2;
 
-    nextY = 169;
+    nextY = 183;
     doc.setTextColor("#0C3C74");
     doc.setFont("Emirates", "bold");
     doc.text("Notes/Further action required:", startX, nextY);
@@ -3234,7 +3237,7 @@ doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
     const notes = doc.splitTextToSize(formData.notes || "N/A", maxWidth);
     doc.text(notes, startX, nextY);
 
-    nextY = 173;
+    nextY = 188;
     const colWidths = [40, 65, 18, 65]; // Column widths
     const rowHeight = 8; // Row height
 
@@ -3356,7 +3359,7 @@ doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
     }
 
     doc.setFont("Emirates", "bold");
-    nextY = 214;
+    nextY = 229;
     doc.setTextColor("#0C3C74");
     doc.text("Service Type", 10, nextY);
     nextY -= 2; // Space after the title
@@ -3427,7 +3430,7 @@ doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
       optionServiceX += optionSpacing;
     });
 
-    nextY = 229;
+    nextY = 243;
     const addSignatures = (signatures, nextY) => {
       doc.setFont("Emirates", "bold");
 
@@ -3509,13 +3512,12 @@ doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
     // Call the function to add signatures
     nextY = addSignatures(formData.signatures, nextY);
 
-    const footerY = pageHeight - 20; // Adjust footer position from bottom
+    const footerY = pageHeight - 13; // Adjust footer position from bottom
     const centerX = doc.internal.pageSize.width / 2; // Get center alignment
     const leftAlignX = 40; // Adjust for left-side text
     const rightAlignX = doc.internal.pageSize.width - 80; // Adjust for right-side text
     // doc.setTextColor("#0C3C74");
-        doc.setTextColor(208, 37, 40);
-
+    doc.setTextColor(208, 37, 40);
 
     // **Company Name - Centered**
     const lineY = footerY - 5; // Adjust 5 units above the text
@@ -3594,7 +3596,7 @@ doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
   const EXPORT_COLUMNS = [
     "Service Request Number",
     "Customer Name",
-    "Machine Type",
+    "Machine Model",
     "Address",
     "Serial Number",
     "Contact",
@@ -4090,7 +4092,7 @@ doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
     const columnWidths = {
       "Service Request Number": 32,
       "Customer Name": 45,
-      "Machine Type": 45,
+      "Machine Model": 45,
       Address: 40,
       "Serial Number": 45,
       Contact: 30,
@@ -4206,7 +4208,7 @@ doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
       const isTooLong =
         serialNumber.length > 100 ||
         address.length > 100 ||
-        descriptionText.length > 1000 ||
+        descriptionText.length > 1250 ||
         causeOfFailureText.length > 500 ||
         notes.length > 200;
 
@@ -4260,9 +4262,9 @@ doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
       const departureDate = formatDate(values.departureDate);
       const returnDate = formatDate(values.returnDate);
 
-      console.log("Installation Date (final):", installationDate);
-      console.log("Departure Date (final):", departureDate);
-      console.log("Return Date (final):", returnDate);
+      // console.log("Installation Date (final):", installationDate);
+      // console.log("Departure Date (final):", departureDate);
+      // console.log("Return Date (final):", returnDate);
 
       if ([installationDate, departureDate, returnDate].includes("N/A")) {
         notification.error({
@@ -4323,7 +4325,7 @@ doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
       formData.append("action", "new");
       // formData.append("srn", srn);
       formData.append("customerName", values.customerName);
-      formData.append("machineType", values.machineType);
+      formData.append("machineModel", values.machineModel);
       formData.append("address", address);
       formData.append("serialNumber", values.serialNumber);
       formData.append("contact", values.contact);
@@ -4438,7 +4440,7 @@ doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
         srn: newSRN,
 
         customerName: values.customerName,
-        machineType: values.machineType,
+        machineModel: values.machineModel,
         address,
         serialNumber: values.serialNumber,
         contact: values.contact,
@@ -4551,7 +4553,7 @@ doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
         (values.serialNumber?.length || 0) > 100 ||
         (values.address?.length || 0) > 100 ||
         (values["description of work/of defect/failure mode"]?.length || 0) >
-          1000 ||
+          1250 ||
         (values["cause of failure"]?.length || 0) > 500 ||
         (values["notes/further action required"]?.length || 0) > 200;
 
@@ -4605,9 +4607,9 @@ doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
       const departureDate = formatDate(values.departureDate);
       const returnDate = formatDate(values.returnDate);
 
-      console.log("Installation Date (final):", installationDate);
-      console.log("Departure Date (final):", departureDate);
-      console.log("Return Date (final):", returnDate);
+      // console.log("Installation Date (final):", installationDate);
+      // console.log("Departure Date (final):", departureDate);
+      // console.log("Return Date (final):", returnDate);
 
       const cleanedPartsUsed = (editTabledata || []).map((row) => ({
         partNumber: row?.partNumber?.toString().trim() || "",
@@ -4696,7 +4698,7 @@ doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
       formData.append("action", "updateData");
       formData.append("srn", selectedRecord?.["Service Request Number"]);
       formData.append("customerName", values.customerName);
-      formData.append("machineType", values.machineType);
+      formData.append("machineModel", values.machineModel);
       formData.append("address", values.address);
       formData.append("serialNumber", values.serialNumber);
       formData.append("contact", values.contact);
@@ -4748,7 +4750,7 @@ doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
       const pdfPayload = {
         srn: selectedRecord?.["Service Request Number"] || "N/A",
         customerName: values.customerName,
-        machineType: values.machineType,
+        machineModel: values.machineModel,
         address: values.address,
         serialNumber: values.serialNumber,
         contact: values.contact,
@@ -4932,7 +4934,7 @@ doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
         description: "Error fetching PDF link.",
         placement: "bottomRight",
       });
-    }finally{
+    } finally {
       setDownloadLoader(false);
     }
   };
@@ -5172,7 +5174,7 @@ doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
                                 address: "",
                                 contact: "",
                                 telephone: "",
-                                machineType: "",
+                                machineModel: "",
                                 serialNumber: "",
                                 // installationDate: null,
                                 installationDate: "",
@@ -5196,7 +5198,7 @@ doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
                                 address: matched["Address"] || "",
                                 contact: matched["Contact"] || "",
                                 telephone: matched["Telephone"] || "",
-                                machineType: matched["Machine Type"] || "",
+                                machineModel: matched["Machine Model"] || "",
                                 serialNumber: matched["Serial Number"] || "",
 
                                 installationDate:
@@ -5209,7 +5211,7 @@ doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
                                 address: "",
                                 contact: "",
                                 telephone: "",
-                                machineType: "",
+                                machineModel: "",
                                 serialNumber: "",
                                 installationDate: null,
                               });
@@ -5284,16 +5286,16 @@ doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
 
                     <div className="col-12 col-md-6">
                       <Form.Item
-                        label="Machine Type"
-                        name="machineType"
+                        label="Machine Model"
+                        name="machineModel"
                         rules={[
                           {
                             required: true,
-                            message: "Please enter machine type",
+                            message: "Please enter machine model",
                           },
                         ]}
                       >
-                        <Input placeholder="Enter machine type" />
+                        <Input placeholder="Enter machine model" />
                       </Form.Item>
 
                       <Form.Item
@@ -5471,8 +5473,8 @@ doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
                         placeholder="Enter the description of work/of defect/failure mode"
                         value={descriptionText}
                         onChange={handleDescriptionTextChange}
-                        autoSize={{ minRows: 5, maxRows: 5 }}
-                        maxLength={995}
+                        autoSize={{ minRows: 6, maxRows: 6 }}
+                        maxLength={1243}
                         showCount
                       />
                     </Form.Item>
@@ -5718,7 +5720,7 @@ doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
             <div className="col-12 col-md-12 col-lg-12 col-xl-12  d-flex flex-column align-items-center justify-content-center p-2">
               <div className="fw-bold text-center">
                 <img
-                  src={TongdaCenterLogo}
+                  src={TongdaLogo}
                   alt="TongdaLogo"
                   className="img-fluid haitianTableLogo"
                 />
@@ -5841,7 +5843,7 @@ doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
             >
               <div className="col-12 col-lg-8 text-center m-auto">
                 <img
-                  src={TongdaCenterLogo}
+                  src={TongdaLogo}
                   alt="TongdaLogo"
                   className="img-fluid haitianViewEditFormLogo"
                 />
@@ -5879,7 +5881,7 @@ doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
                   </div>
 
                   <div className="col-12 col-md-6">
-                    <Form.Item label="Machine Type" name="machineType">
+                    <Form.Item label="Machine Model" name="machineModel">
                       <Input readOnly />
                     </Form.Item>
 
@@ -5995,7 +5997,7 @@ doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
                       loading={downloadLoader}
                       disabled={downloadLoader}
                     >
-                     {downloadLoader ? "Downloading..." : "Download PDF"}
+                      {downloadLoader ? "Downloading..." : "Download PDF"}
                     </Button>
                     <Button
                       size="large"
@@ -6017,7 +6019,7 @@ doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
             >
               <div className="col-12 col-lg-8 text-center m-auto">
                 <img
-                  src={TongdaCenterLogo}
+                  src={TongdaLogo}
                   alt="TongdaLogo"
                   className="img-fluid haitianViewEditFormLogo"
                 />
@@ -6105,16 +6107,16 @@ doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
 
                   <div className="col-12 col-md-6">
                     <Form.Item
-                      label="Machine Type"
-                      name="machineType"
+                      label="Machine Model"
+                      name="machineModel"
                       rules={[
                         {
                           required: true,
-                          message: "Please enter machine type",
+                          message: "Please enter machine model",
                         },
                       ]}
                     >
-                      <Input placeholder="Enter machine type" />
+                      <Input placeholder="Enter machine model" />
                     </Form.Item>
 
                     <Form.Item
@@ -6290,8 +6292,8 @@ doc.addImage(TongdaLogo, "PNG", logoX, logoY, logoWidth, logoHeight);
                       placeholder="Enter the description of work/of defect/failure mode"
                       value={descriptionText}
                       onChange={handleEditDescriptionChange}
-                      autoSize={{ minRows: 5, maxRows: 5 }}
-                      maxLength={995}
+                      autoSize={{ minRows: 6, maxRows: 6 }}
+                      maxLength={1243}
                       showCount
                     />
                   </Form.Item>

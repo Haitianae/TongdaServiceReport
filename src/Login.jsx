@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import TongdaLogo from "./Images/TongdaCenterLogo.png";
+import TongdaLogo from "./Images/TongdaMiddleEastLogo.png";
 // import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 // import { faCircleUser, faLock } from "@fortawesome/free-solid-svg-icons";
 import TongdaBackgroundImage from "./Images/TongdaBanner.jpg";
@@ -46,7 +46,7 @@ export default function Login({ onLoginSuccess }) {
     setLoading(true);
     try {
       const response = await fetch(
-        "https://script.google.com/macros/s/AKfycbwfYbwo6e5HTxG_L27u-YxAnvgjKnryyUlxqwkiiH_S6SOA2hvIqhxzZE8nEg1GEoJ0/exec",
+        "https://script.google.com/macros/s/AKfycbyoP_dnLUXdx76iTeVoVXBv6YHGiAyjiRTTtub86VB6po2uBI69MK10UGKPLr6xXgiy/exec",
         {
           method: "POST",
           body: new URLSearchParams({
@@ -154,9 +154,9 @@ export default function Login({ onLoginSuccess }) {
                   <div className="m-auto d-flex justify-content-center align-items-center m-0 p-0 ">
                     <img
                       src={TongdaLogo}
-                      className="m-0 p-0 ms-3 "
+                      className="m-0 p-0"
                       alt="Tongda Logo"
-                      style={{ width: "60%" }}
+                      style={{ width: "50%" }}
                     />
                   </div>
                   <div>

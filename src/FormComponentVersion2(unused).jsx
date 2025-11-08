@@ -1320,7 +1320,7 @@ const clearEditCustomerSignature = () => {
 
     // Enforce row limits
     if (lines.length > maxRows[field]) {
-      console.log("Too many lines for", field);
+      // console.log("Too many lines for", field);
 
       // message.warning(fieldMessages[field]);
       notification.warning({
@@ -2179,7 +2179,7 @@ const clearEditCustomerSignature = () => {
           placement: "bottomRight",
            duration: 0,
         });
-        console.log("Drive Link:", result.url);
+        // console.log("Drive Link:", result.url);
       } else {
         notification.error({
           message: "Error",
@@ -2195,7 +2195,7 @@ const clearEditCustomerSignature = () => {
         placement: "bottomRight",
          duration: 0,
       });
-      console.error("Upload error:", error);
+      // console.error("Upload error:", error);
     }
   };
 
